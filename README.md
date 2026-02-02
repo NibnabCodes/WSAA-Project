@@ -1,2 +1,2 @@
 # WSAA-Project
-This repository contains my project for the Web Ser4vices &amp; Applications module
+This repository contains my project for the Web Services &amp; Applications module
