@@ -1,0 +1,1 @@
+# defines all API endpoints and connects them to the DAO functions. Also handles request parsing and response formatting. 
