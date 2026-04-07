@@ -1,14 +1,20 @@
+<div align="center">
+
 # Game Vault 🎮
+
 
 > A RESTful Flask web application for managing your personal game collection.
 
 ---
 
+</div> 
+
+
 ## About The Project
 
 This project demonstrates the creation and consumption of a RESTful API built with Python and Flask. It uses the [RAWG Video Games Database API](https://rawg.io/apidocs) as an outside data source, allowing users to search for real games and save them to their personal collection.
 
-The application performs full **CRUD (Create, Read, Update, Delete)** operations across three related MySQL database tables — games, reviews and wishlist.
+The application performs full **CRUD (Create, Read, Update, Delete)** operations across three related MySQL database tables: games, reviews and wishlist.
 
 ---
 
