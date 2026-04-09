@@ -1,1 +1,0 @@
-# all functions that read and write to the MySQL database. Containing SQL queries. The app.py file will call these functions to interact with the database. 
