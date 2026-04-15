@@ -104,4 +104,82 @@ class GameDAO:
             currentkey = currentkey + 1
         return game
     
+#
+# Reviews Table CRUD Operations
+#
+
+    def getAllReviews(self):
+        cursor = self.getcursor()
+        sql = "SELECT * FROM reviews"
+        cursor.execute(sql)
+        results = cursor.fetchall()
+
+        returnArray = []
+        for result in results:
+            returnArray.append(self.convertToReviewDictionary(result))
+        self.closeAll()
+        return returnArray
+
+    def getReviewsByGameID(self, game_id):
+        cursor = self.getcursor()
+        sql = "SELECT * FROM reviews WHERE game_id = %s"
+        values = (game_id,)
+        cursor.execute(sql, values)
+        results = cursor.fetchall()
+        returnArray = []
+        for result in results:
+            returnArray.append(self.convertToReviewDictionary(result)) # Returns a list of dictionaries, each representing a review for the given game_id
+        self.closeAll()
+        return returnArray
+ 
+    def createReview(self, review):
+        cursor = self.getcursor()
+        sql = "INSERT INTO reviews (game_id, recommended, comment, date_added) VALUES (%s, %s, %s, %s)"
+        values = (
+            review.get("game_id"),
+            review.get("recommended"),
+            review.get("comment"),
+            review.get("date_added")
+        )
+        cursor.execute(sql, values)
+        self.connection.commit()
+        newid = cursor.lastrowid
+        review["id"] = newid
+        self.closeAll()
+        return review
+ 
+    def updateReview(self, id, review):
+        cursor = self.getcursor()
+        sql = "UPDATE reviews SET recommended=%s, comment=%s WHERE id = %s"
+        values = (
+            review.get("recommended"),
+            review.get("comment"),
+            id
+        )
+        cursor.execute(sql, values)
+        self.connection.commit()
+        self.closeAll()
+ 
+    def deleteReview(self, id):
+        cursor = self.getcursor()
+        sql = "DELETE FROM reviews WHERE id = %s"
+        values = (id,)
+        cursor.execute(sql, values)
+        self.connection.commit()
+        self.closeAll()
+        print("Review deleted")
+ 
+    def convertToReviewDictionary(self, resultLine):
+        attkeys = ["id", "game_id", "recommended", "comment", "date_added"]
+        review = {}
+        currentkey = 0
+        for attrib in resultLine:
+            review[attkeys[currentkey]] = attrib
+            currentkey = currentkey + 1
+        return review
+    
+#
+# Wishlist Table CRUD Operations
+#
+    
 gameDAO = GameDAO()
