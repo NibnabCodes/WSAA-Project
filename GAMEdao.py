@@ -30,6 +30,78 @@ class GameDAO:
         self.connection.close()
         self.cursor.close()
         
-    #
-    # Operations for the games table
-    #    
+#
+# Games Table CRUD Operations
+#
+    
+    def getAllGames(self):
+        cursor = self.getcursor()
+        sql = "SELECT * FROM games"
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        returnArray = []
+        for result in results:
+            returnArray.append(self.convertToGameDictionary(result))
+        self.closeAll()
+        return returnArray
+ 
+    def getGameByID(self, id):
+        cursor = self.getcursor()
+        sql = "SELECT * FROM games WHERE id = %s"
+        values = (id,)
+        cursor.execute(sql, values)
+        result = cursor.fetchone()
+        returnvalue = self.convertToGameDictionary(result)
+        self.closeAll()
+        return returnvalue
+ 
+    def createGame(self, game):
+        cursor = self.getcursor()
+        sql = "INSERT INTO games (rawg_id, title, genre, image_url, release_date) VALUES (%s, %s, %s, %s, %s)"
+        values = (
+            game.get("rawg_id"),
+            game.get("title"),
+            game.get("genre"),
+            game.get("image_url"),
+            game.get("release_date")
+        )
+        cursor.execute(sql, values)
+        self.connection.commit()
+        newid = cursor.lastrowid
+        game["id"] = newid
+        self.closeAll()
+        return game
+ 
+    def updateGame(self, id, game):
+        cursor = self.getcursor()
+        sql = "UPDATE games SET title=%s, genre=%s, image_url=%s, release_date=%s WHERE id = %s"
+        values = (
+            game.get("title"),
+            game.get("genre"),
+            game.get("image_url"),
+            game.get("release_date"),
+            id
+        )
+        cursor.execute(sql, values)
+        self.connection.commit()
+        self.closeAll()
+ 
+    def deleteGame(self, id):
+        cursor = self.getcursor()
+        sql = "DELETE FROM games WHERE id = %s"
+        values = (id,)
+        cursor.execute(sql, values)
+        self.connection.commit()
+        self.closeAll()
+        print("Game deleted")
+ 
+    def convertToGameDictionary(self, resultLine):
+        attkeys = ["id", "rawg_id", "title", "genre", "image_url", "release_date"]
+        game = {}
+        currentkey = 0
+        for attrib in resultLine:
+            game[attkeys[currentkey]] = attrib
+            currentkey = currentkey + 1
+        return game
+    
+gameDAO = GameDAO()
