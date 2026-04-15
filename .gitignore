@@ -208,3 +208,6 @@ __marimo__/
 
 # Sensitive configuration file
 config.py
+
+# Test folder
+tests/
