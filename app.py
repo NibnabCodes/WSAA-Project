@@ -96,5 +96,32 @@ def delete_review(id):
     dao.gameDAO.deleteReview(id)
     return jsonify({"message": "Review deleted successfully"})
 
+# Wishlist endpoints
+
+# Get all wishlist entries
+@app.route('/api/wishlist', methods=['GET'])
+def get_wishlist():
+    return jsonify(dao.gameDAO.getAllWishlist())
+
+# Create wishlist entry
+@app.route('/api/wishlist', methods=['POST'])
+def create_wishlist():
+    wishlist = request.json
+    return jsonify(dao.gameDAO.createWishlist(wishlist))
+
+# Update wishlist entry
+@app.route('/api/wishlist/<int:id>', methods=['PUT'])
+def update_wishlist(id):
+    wishlist = request.json
+    dao.gameDAO.updateWishlist(id, wishlist)
+    return jsonify({"message": "Wishlist updated successfully"})
+
+# Delete wishlist entry
+@app.route('/api/wishlist/<int:id>', methods=['DELETE'])
+def delete_wishlist(id):
+    dao.gameDAO.deleteWishlist(id)
+    return jsonify({"message": "Wishlist entry deleted successfully"})
+
+# Run the app
 if __name__ == '__main__':
     app.run(debug=True)
