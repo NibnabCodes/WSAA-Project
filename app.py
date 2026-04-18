@@ -70,5 +70,31 @@ def search_game(game_name):
     
     return jsonify(games)
 
+# Reviews endpoints
+
+# Get reviews by ID
+@app.route('/api/reviews/<int:game_id>', methods=['GET'])
+def get_reviews(game_id):
+    return jsonify(dao.gameDAO.getReviewsByGameID(game_id))
+
+# Create review
+@app.route('/api/reviews', methods=['POST'])
+def create_review():
+    review = request.json
+    return jsonify(dao.gameDAO.createReview(review))
+
+# Update review
+@app.route('/api/reviews/<int:id>', methods=['PUT'])
+def update_review(id):
+    review = request.json
+    dao.gameDAO.updateReview(id, review)
+    return jsonify({"message": "Review updated successfully"})
+
+# Delete review
+@app.route('/api/reviews/<int:id>', methods=['DELETE'])
+def delete_review(id):
+    dao.gameDAO.deleteReview(id)
+    return jsonify({"message": "Review deleted successfully"})
+
 if __name__ == '__main__':
     app.run(debug=True)
