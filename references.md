@@ -20,7 +20,10 @@ HTML Buttons: https://www.w3schools.com/tags/tag_button.asp
 HTML Sections: https://www.w3schools.com/tags/tag_section.asp  
 HTML div tag: https://www.w3schools.com/Tags/tag_div.asp  
 HTML id & class: https://www.w3schools.com/html/html_id.asp  
-CSS display none: https://www.w3schools.com/cssref/pr_class_display.php  
+Hiding edit forms by default: https://www.w3schools.com/cssref/pr_class_display.php
+Game dropdown, priority, recommended: https://www.w3schools.com/tags/tag_select.asp  
+Review comment box: https://www.w3schools.com/tags/tag_textarea.asp  
+Storing review/wishlist id secretly: https://www.w3schools.com/tags/att_input_type_hidden.asp
 
 ## References for app.js:  
 

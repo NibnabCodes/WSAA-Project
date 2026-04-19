@@ -69,6 +69,107 @@
             </table>
         </section>
 
+        <!-- REVIEWS SECTION -->
+
+        <section id="reviews-section">
+            <h2>Reviews</h2>
+ 
+            <!-- Add Review Form -->
+            <div id="add-review-form">
+                <h3>Add a Review</h3>
+                <select id="review-game-id">
+                    <option value="">Select a game...</option>
+                    <!-- Games will be loaded here by JavaScript -->
+                </select>
+                <select id="review-recommended">
+                    <option value="1">Recommended</option>
+                    <option value="0">Not Recommended</option>
+                </select>
+                <textarea id="review-comment" placeholder="Write your review here..."></textarea>
+                <button onclick="createReview()">Submit Review</button>
+            </div>
+ 
+            <!-- Edit Review Form (hidden by default) -->
+            <div id="edit-review-form" style="display:none;">
+                <h3>Edit Review</h3>
+                <input type="hidden" id="edit-review-id">
+                <select id="edit-review-recommended">
+                    <option value="1">Recommended</option>
+                    <option value="0">Not Recommended</option>
+                </select>
+                <textarea id="edit-review-comment" placeholder="Edit your review..."></textarea>
+                <button onclick="updateReview()">Save Changes</button>
+                <button onclick="hideEditReviewForm()">Cancel</button>
+            </div>
+ 
+            <!-- Reviews Table -->
+            <table id="reviews-table">
+                <thead>
+                    <tr>
+                        <th>Game</th>
+                        <th>Recommended</th>
+                        <th>Comment</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="reviews-body">
+                    <!-- Reviews will be loaded here by JavaScript -->
+                </tbody>
+            </table>
+        </section>
+ 
+        <!-- WISHLIST SECTION -->
+
+        <section id="wishlist-section">
+            <h2>Wishlist</h2>
+ 
+            <!-- Add Wishlist Form -->
+            <div id="add-wishlist-form">
+                <h3>Add to Wishlist</h3>
+                <select id="wishlist-game-id">
+                    <option value="">Select a game...</option>
+                    <!-- Games will be loaded here by JavaScript -->
+                </select>
+                <select id="wishlist-priority">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+                <input type="text" id="wishlist-notes" placeholder="Notes e.g. Wait for sale...">
+                <button onclick="createWishlist()">Add to Wishlist</button>
+            </div>
+ 
+            <!-- Edit Wishlist Form (hidden by default) -->
+            <div id="edit-wishlist-form" style="display:none;">
+                <h3>Edit Wishlist Entry</h3>
+                <input type="hidden" id="edit-wishlist-id">
+                <select id="edit-wishlist-priority">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+                <input type="text" id="edit-wishlist-notes" placeholder="Notes...">
+                <button onclick="updateWishlist()">Save Changes</button>
+                <button onclick="hideEditWishlistForm()">Cancel</button>
+            </div>
+ 
+            <!-- Wishlist Table -->
+            <table id="wishlist-table">
+                <thead>
+                    <tr>
+                        <th>Game</th>
+                        <th>Priority</th>
+                        <th>Notes</th>
+                        <th>Date Added</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="wishlist-body">
+                    <!-- Wishlist entries will be loaded here by JavaScript -->
+                </tbody>
+            </table>
+        </section>
 
     </div><!-- End of container -->
 
