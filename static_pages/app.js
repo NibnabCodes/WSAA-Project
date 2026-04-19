@@ -1,1 +1,2 @@
 // All JavaScript and AJAX fetch calls that communicate with the Flask API. This file is linked to the index.html file and will be executed when the page loads. It will handle all user interactions and update the UI accordingly.
+// Author: Niamh Hogan

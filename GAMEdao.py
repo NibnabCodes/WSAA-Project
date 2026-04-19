@@ -1,7 +1,3 @@
-# all functions that read and write to the MySQL database. Containing SQL queries. The app.py file will call these functions to interact with the database. 
-# The following code was adapted from lab material developed by Andrew Beatty for the Web Services & Applications module
-# Source; https://github.com/andrewbeattycourseware/wsaa-courseware/blob/main/code/Topic08-generated-client/bookDAO.py
-
 import mysql.connector
 import config as cfg
  

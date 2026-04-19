@@ -106,13 +106,14 @@ game_library
 
 ---
 
-## Project Structure
+## Repo Structure
 
 ```
 WSAA-Project/
 ├── app.py                  # Flask app and API routes
 ├── dao.py                  # All database operations
 ├── requirements.txt        # Python dependencies
+├── references.md           # References used for Project
 ├── README.md               # This file
 └── static_pages/
     ├── index.html          # Main web page
