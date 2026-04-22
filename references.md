@@ -29,7 +29,13 @@ Storing review/wishlist id secretly: https://www.w3schools.com/tags/att_input_ty
 The code in this file was partially adapted from lab material developed by Andrew Beatty for the Web Services & Applications module:  
 https://github.com/andrewbeattycourseware/wsaa-courseware/blob/main/code/Topic08-generated-client/staticpages/app.js  
 Error handling:  
-API Layer: https://api.jquery.com/jquery.ajax/; https://www.w3schools.com/js/js_json_stringify.asp; 
+API Layer: https://api.jquery.com/jquery.ajax/; https://www.w3schools.com/js/js_json_stringify.asp  
+toggleClass(): https://api.jquery.com/toggleClass/  
+addClass(): https://api.jquery.com/addClass/  
+JavaScript Date & toISOString(): https://www.w3schools.com/js/js_dates.asp  
+
+
+
 
 
 ## References for styles.css:

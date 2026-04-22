@@ -42,4 +42,44 @@ function api(method, path, data) {
 }
 
 // ---- Utilities -----
+/*
+   Show or hide the loading spinner.
+*/
+function showLoading(show = true) {
+    console.log("[UI] showLoading:", show);
+    $("#loading").toggleClass("hidden", !show);
+}
+
+/*
+   Show a toast notification to the user.
+*/
+let toastTimer = null;
+function showToast(message, type = "success", timeoutMs = 2400) {
+    console.log("[UI] showToast:", type, message);
+    const $toast = $("#toast");
+    $toast.removeClass("hidden success error").addClass(type).text(message);
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => $toast.addClass("hidden"), timeoutMs);
+}
+
+/*
+   Safely escape text before inserting into HTML.
+*/
+function escapeHtml(value) {
+    if (value === null || value === undefined) return "";
+    return String(value)
+        .replace(/&/g,  "&amp;")
+        .replace(/</g,  "&lt;")
+        .replace(/>/g,  "&gt;")
+        .replace(/"/g,  "&quot;")
+        .replace(/'/g,  "&#039;");
+} 
+
+/*
+   Get today's date and time formatted for MySQL DATETIME.
+   e.g. "2024-03-16 10:00:00"
+*/
+function getNow() {
+    return new Date().toISOString().slice(0, 19).replace("T", " ");
+} 
 
