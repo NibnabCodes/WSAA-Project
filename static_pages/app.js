@@ -83,3 +83,9 @@ function getNow() {
     return new Date().toISOString().slice(0, 19).replace("T", " ");
 } 
 
+// ---- State ----
+
+let allGames    = [];   
+let allReviews  = [];   
+let allWishlist = [];   
+
