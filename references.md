@@ -27,6 +27,9 @@ Storing review/wishlist id secretly: https://www.w3schools.com/tags/att_input_ty
 
 ## References for app.js:  
 The code in this file was partially adapted from lab material developed by Andrew Beatty for the Web Services & Applications module:  
-https://github.com/andrewbeattycourseware/wsaa-courseware/blob/main/code/Topic08-generated-client/staticpages/app.js
+https://github.com/andrewbeattycourseware/wsaa-courseware/blob/main/code/Topic08-generated-client/staticpages/app.js  
+Error handling:  
+API Layer: https://api.jquery.com/jquery.ajax/; https://www.w3schools.com/js/js_json_stringify.asp; 
+
 
 ## References for styles.css:

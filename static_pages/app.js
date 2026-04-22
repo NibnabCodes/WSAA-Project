@@ -17,6 +17,29 @@ const AUTH_TOKEN = "";
 
 // ----API LAYER ---
 /*
-   This function handles ALL HTTP requests.
-   It avoids repeating $.ajax and improves maintainability.
+   Central AJAX function - This function handles ALL HTTP requests.
+   It avoids repeating $.ajax across every CRUD function.
 */
+
+function api(method, path, data) {
+    const url = API_BASE_URL.replace(/\/+$/, "") + path;
+    console.log(`[API] ${method} ${url}`, data ?? "");
+    return $.ajax({
+        url:         url,
+        method:      method,
+        crossDomain: true,
+        contentType: data ? "application/json; charset=utf-8" : undefined,
+        dataType:    "json",
+        data:        data ? JSON.stringify(data) : undefined,
+        headers:     AUTH_TOKEN ? { Authorization: `Bearer ${AUTH_TOKEN}` } : {},
+    })
+    .done((res, status, xhr) => {
+        console.log(`[API DONE] ${method} ${url}`, { status, res, xhr });
+    })
+    .fail((xhr, status, err) => {
+        console.error(`[API FAIL] ${method} ${url}`, { status, err, xhr });
+    });
+}
+
+// ---- Utilities -----
+
