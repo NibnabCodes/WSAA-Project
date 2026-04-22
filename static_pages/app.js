@@ -142,7 +142,6 @@ function renderGames(games) {
     console.log("[Render] done. Rows now in DOM:", $("#games-body tr").length);
 }
 
-
 /*
    Get all games from the database.
 */
@@ -168,3 +167,50 @@ async function loadGames() {
         console.log("[Games] loadGames() finished");
     }
 }
+
+/*
+   POST; Save a game from RAWG search results.
+   Payload is built in event handler & passed here.
+*/
+async function saveGame(payload) {
+    console.log("[Games] saveGame() payload:", payload);
+    showLoading(true);
+    try {
+        const created = await api("POST", ENDPOINTS.games, payload);
+        console.log("[Games] created:", created);
+        showToast(created.title + " saved to your collection!", "success");
+        allGames.push(created);
+        renderGames(allGames);
+        $("#search-results").empty();
+    } catch (err) {
+        console.error("[Games] saveGame failed:", err);
+        showToast("Failed to save game.", "error");
+    } finally {
+        showLoading(false);
+    }
+}
+
+
+// --- EVENT HANDLERS ---
+
+$(document).ready(function() {
+    console.log("[DOM] document.ready — initialising handlers and loading data");
+ 
+    // load all data on page load
+    loadGames();
+    loadWishlist();
+
+    // ---- GAMES ----
+ 
+    // Save game from search results; payload built here and passed to saveGame()
+    $(document).on("click", ".btn-save-game", function() {
+        const $btn = $(this);
+        const payload = {
+            rawg_id:      $btn.data("rawgid"),
+            title:        $btn.data("title"),
+            genre:        $btn.data("genre"),
+            image_url:    $btn.data("image"),
+            release_date: $btn.data("date")
+        };
+        saveGame(payload);
+    }); 
