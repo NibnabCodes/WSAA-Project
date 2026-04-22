@@ -89,3 +89,82 @@ let allGames    = [];
 let allReviews  = [];   
 let allWishlist = [];   
 
+// ---- GAMES ----
+
+/* 
+    Render the games table from the cached allGames array.
+    Always calLed after updating allGames.
+*/
+function renderGames(games) {
+    console.log("[Render] renderGames() start, count:", games.length);
+ 
+    const $tbody = $("#games-body");
+    if ($tbody.length === 0) {
+        console.error("[Render] #games-body NOT FOUND in DOM!");
+        return;
+    }
+ 
+    $tbody.empty();
+    populateGameDropdowns(games);
+ 
+    if (!Array.isArray(games)) {
+        console.error("[Render] Expected array, got:", games);
+        $tbody.append(`<tr><td colspan="5">Invalid data received.</td></tr>`);
+        console.log("[Render] appended invalid data row");
+        return;
+    }
+ 
+    if (games.length === 0) {
+        $tbody.append(`<tr><td colspan="5">No games saved yet. Search for one above!</td></tr>`);
+        console.log("[Render] No games to display");
+        return;
+    }
+ 
+    let rowsHtml = "";
+    for (const game of games) {
+        rowsHtml +=
+            `<tr data-id="${escapeHtml(game.id)}">` +
+                `<td><img src="${escapeHtml(game.image_url)}" alt="${escapeHtml(game.title)}" width="60"></td>` +
+                `<td>${escapeHtml(game.title)}</td>` +
+                `<td>${escapeHtml(game.genre)}</td>` +
+                `<td>${escapeHtml(game.release_date)}</td>` +
+                `<td>` +
+                    `<button class="btn-edit-game">Edit</button>` +
+                    `<button class="btn-delete-game">Delete</button>` +
+                    `<button class="btn-view-reviews" data-id="${escapeHtml(game.id)}">Reviews</button>` +
+                `</td>` +
+            `</tr>`;
+    }
+ 
+    console.log("[Render] built rowsHtml length:", rowsHtml.length);
+    $tbody.html(rowsHtml);
+    $("#games-count").text(String(games.length));  // optional count badge
+    console.log("[Render] done. Rows now in DOM:", $("#games-body tr").length);
+}
+
+
+/*
+   Get all games from the database.
+*/
+async function loadGames() {
+    console.log("[Games] loadGames() called");
+    showLoading(true);
+    try {
+        const data = await api("GET", ENDPOINTS.games);
+        console.log("[Games] GET response:", data, "Array?", Array.isArray(data));
+        if (Array.isArray(data)) {
+            allGames = data;
+            renderGames(allGames);
+        } else {
+            showToast("Unexpected response from server.", "error");
+            renderGames([]);
+        }
+    } catch (err) {
+        console.error("[Games] loadGames failed:", err);
+        showToast("Failed to load games.", "error");
+        renderGames([]);
+    } finally {
+        showLoading(false);
+        console.log("[Games] loadGames() finished");
+    }
+}
