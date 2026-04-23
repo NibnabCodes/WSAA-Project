@@ -1,4 +1,5 @@
 import mysql.connector
+from sqlalchemy import values
 import config as cfg
  
 class GameDAO:
@@ -16,18 +17,14 @@ class GameDAO:
         self.database = cfg.mysql["database"]
  
     def getcursor(self):
-        self.connection = mysql.connector.connect(
-            host =      self.host,
-            user =      self.user,
-            password =  self.password,
-            database =  self.database,
+        connection = mysql.connector.connect(
+            host=self.host,
+            user=self.user,
+            password=self.password,
+            database=self.database
         )
-        self.cursor = self.connection.cursor()
-        return self.cursor
- 
-    def closeAll(self):
-        self.connection.close()
-        self.cursor.close()
+        cursor = connection.cursor()
+        return connection, connection.cursor()
         
 #
 # Games Table CRUD Operations
@@ -35,31 +32,46 @@ class GameDAO:
     
 # Get all games
     def getAllGames(self):
-        cursor = self.getcursor()
-        sql = "SELECT * FROM games"
-        cursor.execute(sql)
+        connection, cursor = self.getcursor()
+
+        cursor.execute("SELECT * FROM games")
         results = cursor.fetchall()
+
         returnArray = []
         for result in results:
             returnArray.append(self.convertToGameDictionary(result))
-        self.closeAll()
+
+        cursor.close()
+        connection.close()
+
         return returnArray
     
 # Get game by ID
     def getGameByID(self, id):
-        cursor = self.getcursor()
+        connection, cursor = self.getcursor()
+
         sql = "SELECT * FROM games WHERE id = %s"
         values = (id,)
+
         cursor.execute(sql, values)
         result = cursor.fetchone()
-        returnvalue = self.convertToGameDictionary(result)
-        self.closeAll()
-        return returnvalue
+
+        cursor.close()
+        connection.close()
+
+        if result:
+            return self.convertToGameDictionary(result)
+        return None
     
 # Create game
     def createGame(self, game):
-        cursor = self.getcursor()
-        sql = "INSERT INTO games (rawg_id, title, genre, image_url, release_date) VALUES (%s, %s, %s, %s, %s)"
+        connection, cursor = self.getcursor()
+
+        sql = """
+            INSERT INTO games (rawg_id, title, genre, image_url, release_date)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+
         values = (
             game.get("rawg_id"),
             game.get("title"),
@@ -67,17 +79,27 @@ class GameDAO:
             game.get("image_url"),
             game.get("release_date")
         )
+
         cursor.execute(sql, values)
-        self.connection.commit()
-        newid = cursor.lastrowid
-        game["id"] = newid
-        self.closeAll()
+        connection.commit()
+
+        game["id"] = cursor.lastrowid
+
+        cursor.close()
+        connection.close()
+
         return game
  
  # Update game
     def updateGame(self, id, game):
-        cursor = self.getcursor()
-        sql = "UPDATE games SET title=%s, genre=%s, image_url=%s, release_date=%s WHERE id = %s"
+        connection, cursor = self.getcursor()
+
+        sql = """
+            UPDATE games
+            SET title=%s, genre=%s, image_url=%s, release_date=%s
+            WHERE id=%s
+        """
+
         values = (
             game.get("title"),
             game.get("genre"),
@@ -85,29 +107,38 @@ class GameDAO:
             game.get("release_date"),
             id
         )
+
         cursor.execute(sql, values)
-        self.connection.commit()
-        self.closeAll()
+        connection.commit()
+
+        cursor.close()
+        connection.close()
  
  # Delete game
     def deleteGame(self, id):
-        cursor = self.getcursor()
+        connection, cursor = self.getcursor()
+
         sql = "DELETE FROM games WHERE id = %s"
         values = (id,)
+
         cursor.execute(sql, values)
-        self.connection.commit()
-        self.closeAll()
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
         print("Game deleted")
  
  # Convert SQL result to dictionary
     def convertToGameDictionary(self, resultLine):
-        attkeys = ["id", "rawg_id", "title", "genre", "image_url", "release_date"]
-        game = {}
-        currentkey = 0
-        for attrib in resultLine:
-            game[attkeys[currentkey]] = attrib
-            currentkey = currentkey + 1
-        return game
+        return {
+            "id": resultLine[0],
+            "rawg_id": resultLine[1],
+            "title": resultLine[2],
+            "genre": resultLine[3],
+            "image_url": resultLine[4],
+            "release_date": resultLine[5]
+        }
     
 #
 # Reviews Table CRUD Operations
@@ -115,69 +146,99 @@ class GameDAO:
 
 # Get all reviews
     def getAllReviews(self):
-        cursor = self.getcursor()
-        sql = "SELECT * FROM reviews"
-        cursor.execute(sql)
+        connection, cursor = self.getcursor()
+
+        cursor.execute("SELECT * FROM reviews")
         results = cursor.fetchall()
 
         returnArray = []
         for result in results:
             returnArray.append(self.convertToReviewDictionary(result))
-        self.closeAll()
+
+        cursor.close()
+        connection.close()
+
         return returnArray
 
 # Get reviews by game ID
     def getReviewsByGameID(self, game_id):
-        cursor = self.getcursor()
+        connection, cursor = self.getcursor()
+
         sql = "SELECT * FROM reviews WHERE game_id = %s"
         values = (game_id,)
+
         cursor.execute(sql, values)
         results = cursor.fetchall()
+
         returnArray = []
         for result in results:
-            returnArray.append(self.convertToReviewDictionary(result)) # Returns a list of dictionaries, each representing a review for the given game_id
-        self.closeAll()
+            returnArray.append(self.convertToReviewDictionary(result))
+
+        cursor.close()
+        connection.close()
+
         return returnArray
     
 # Create review
     def createReview(self, review):
-        cursor = self.getcursor()
-        sql = "INSERT INTO reviews (game_id, recommended, comment, date_added) VALUES (%s, %s, %s, %s)"
+        connection, cursor = self.getcursor()
+
+        sql = """
+            INSERT INTO reviews (game_id, recommended, comment, date_added)
+            VALUES (%s, %s, %s, %s)
+        """
+
         values = (
             review.get("game_id"),
             review.get("recommended"),
             review.get("comment"),
             review.get("date_added")
         )
+
         cursor.execute(sql, values)
-        self.connection.commit()
-        newid = cursor.lastrowid
-        review["id"] = newid
-        self.closeAll()
+        connection.commit()
+
+        review["id"] = cursor.lastrowid
+
+        cursor.close()
+        connection.close()
+
         return review
 
 # Update review
     def updateReview(self, id, review):
-        cursor = self.getcursor()
-        sql = "UPDATE reviews SET recommended=%s, comment=%s WHERE id = %s"
+        connection, cursor = self.getcursor()
+
+        sql = """
+            UPDATE reviews
+            SET recommended=%s, comment=%s
+            WHERE id=%s
+        """
+
         values = (
             review.get("recommended"),
             review.get("comment"),
             id
         )
+
         cursor.execute(sql, values)
-        self.connection.commit()
-        self.closeAll()
+        connection.commit()
+
+        cursor.close()
+        connection.close()
         
 # Delete review
     def deleteReview(self, id):
-        cursor = self.getcursor()
+        connection, cursor = self.getcursor()
+
         sql = "DELETE FROM reviews WHERE id = %s"
         values = (id,)
+
         cursor.execute(sql, values)
-        self.connection.commit()
-        self.closeAll()
-        print("Review deleted")
+        connection.commit()
+
+        cursor.close()
+        connection.close()
  
 # Convert SQL result to dictionary
     def convertToReviewDictionary(self, resultLine):
@@ -195,54 +256,81 @@ class GameDAO:
 
 # Get all wishlist entries
     def getAllWishlist(self):
-        cursor = self.getcursor()
-        sql = "SELECT * FROM wishlist"
-        cursor.execute(sql)
+        connection, cursor = self.getcursor()
+
+        cursor.execute("SELECT * FROM wishlist")
         results = cursor.fetchall()
+
         returnArray = []
         for result in results:
             returnArray.append(self.convertToWishlistDictionary(result))
-        self.closeAll()
+
+        cursor.close()
+        connection.close()
+
         return returnArray
 
 # Create wishlist entry
     def createWishlist(self, wishlist):
-        cursor = self.getcursor()
-        sql = "INSERT INTO wishlist (game_id, priority, notes, date_added) VALUES (%s, %s, %s, %s)"
+        connection, cursor = self.getcursor()
+
+        sql = """
+            INSERT INTO wishlist (game_id, priority, notes, date_added)
+            VALUES (%s, %s, %s, %s)
+        """
+
         values = (
             wishlist.get("game_id"),
             wishlist.get("priority"),
             wishlist.get("notes"),
             wishlist.get("date_added")
         )
+
         cursor.execute(sql, values)
-        self.connection.commit()
-        newid = cursor.lastrowid
-        wishlist["id"] = newid
-        self.closeAll()
+        connection.commit()
+
+        wishlist["id"] = cursor.lastrowid
+
+        cursor.close()
+        connection.close()
+
         return wishlist
  
 # Update wishlist entry
     def updateWishlist(self, id, wishlist):
-        cursor = self.getcursor()
-        sql = "UPDATE wishlist SET priority=%s, notes=%s WHERE id = %s"
+        connection, cursor = self.getcursor()
+
+        sql = """
+            UPDATE wishlist
+            SET priority=%s, notes=%s
+            WHERE id=%s
+        """
+
         values = (
             wishlist.get("priority"),
             wishlist.get("notes"),
             id
         )
+
         cursor.execute(sql, values)
-        self.connection.commit()
-        self.closeAll()
+        connection.commit()
+
+        cursor.close()
+        connection.close()
         
 # Delete wishlist entry
     def deleteWishlist(self, id):
-        cursor = self.getcursor()
+        connection, cursor = self.getcursor()
+
         sql = "DELETE FROM wishlist WHERE id = %s"
         values = (id,)
+
         cursor.execute(sql, values)
-        self.connection.commit()
-        self.closeAll()
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
         print("Wishlist entry deleted")
  
 # Convert SQL result to dictionary

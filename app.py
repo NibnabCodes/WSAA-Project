@@ -16,7 +16,7 @@ def index():
 @app.route('/api/games', methods=['GET'])
 def get_all_games():
     return jsonify(dao.gameDAO.getAllGames())
- 
+
 # Get game by ID
 @app.route('/api/games/<int:id>', methods=['GET'])
 def get_game(id):

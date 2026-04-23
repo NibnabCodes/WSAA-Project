@@ -693,13 +693,15 @@ function hideEditWishlistForm() {
 function validateWishlistForm() {
     let ok = true;
     clearErrors("wishlist");
-}
+
     if (!$("#wishlist-game-id").val()) {
         setError("wishlist", "game_id", "Please select a game");
         ok = false;
     }
+
     console.log("[Wishlist] validateWishlistForm ok?", ok);
     return ok;
+}
 
 // --- HELPERS ----
 /*
