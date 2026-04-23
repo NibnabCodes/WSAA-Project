@@ -48,8 +48,8 @@
                 <input type="text" id="edit-game-genre" placeholder="Genre">
                 <input type="text" id="edit-game-image" placeholder="Image URL">
                 <input type="date" id="edit-game-date">
-                <button onclick="updateGame()">Save Changes</button>
-                <button onclick="hideEditGameForm()">Cancel</button>
+                <button id="btn-save-game-edit">Save Changes</button>
+                <button id="btn-cancel-game-edit">Cancel</button>
             </div>
 
             <!-- Games Table -->
@@ -86,7 +86,7 @@
                     <option value="0">Not Recommended</option>
                 </select>
                 <textarea id="review-comment" placeholder="Write your review here..."></textarea>
-                <button onclick="createReview()">Submit Review</button>
+                <button id="btn-submit-review">Submit Review</button>
             </div>
  
             <!-- Edit Review Form (hidden by default) -->
@@ -98,8 +98,8 @@
                     <option value="0">Not Recommended</option>
                 </select>
                 <textarea id="edit-review-comment" placeholder="Edit your review..."></textarea>
-                <button onclick="updateReview()">Save Changes</button>
-                <button onclick="hideEditReviewForm()">Cancel</button>
+                <button id="btn-save-review-edit">Save Changes</button>
+                <button id="btn-cancel-review-edit">Cancel</button>
             </div>
  
             <!-- Reviews Table -->
@@ -137,7 +137,7 @@
                     <option value="Low">Low</option>
                 </select>
                 <input type="text" id="wishlist-notes" placeholder="Notes e.g. Wait for sale...">
-                <button onclick="createWishlist()">Add to Wishlist</button>
+                <button id="btn-add-wishlist">Add to Wishlist</button>
             </div>
  
             <!-- Edit Wishlist Form (hidden by default) -->
@@ -150,8 +150,8 @@
                     <option value="Low">Low</option>
                 </select>
                 <input type="text" id="edit-wishlist-notes" placeholder="Notes...">
-                <button onclick="updateWishlist()">Save Changes</button>
-                <button onclick="hideEditWishlistForm()">Cancel</button>
+                <button id="btn-save-wishlist-edit">Save Changes</button>
+                <button id="btn-cancel-wishlist-edit">Cancel</button>
             </div>
  
             <!-- Wishlist Table -->

@@ -8,9 +8,10 @@ const API_BASE_URL = "http://127.0.0.1:5000";
 
 // Centralised endpoints
 const ENDPOINTS = {
-    games: "/api/games",
-    reviews: "/api/reviews",
-    wishlist: "/api/wishlist"
+    games:      "/api/games",
+    reviews:    "/api/reviews",
+    wishlist:   "/api/wishlist",
+    search:     "/api/search"
 };
 
 const AUTH_TOKEN = "";
@@ -81,7 +82,23 @@ function escapeHtml(value) {
 */
 function getNow() {
     return new Date().toISOString().slice(0, 19).replace("T", " ");
-} 
+}  
+
+// ----- Validation Helpers -------
+ 
+/*
+   Clear all error messages for a given group.
+*/
+function clearErrors(group) {
+    $(`.${group}-error`).text("");
+}
+ 
+/*
+   Set an error message for a specific field in a group.
+*/
+function setError(group, name, message) {
+    $(`.${group}-error[data-for="${name}"]`).text(message || "");
+}
 
 // ---- State ----
 
@@ -190,11 +207,57 @@ async function saveGame(payload) {
     }
 }
 
+/*
+   PUT - Update an existing game.
+   id and payload are built in the event handler and passed in.
+*/
+async function updateGame(id, payload) {
+    console.log("[Games] updateGame() id:", id, "payload:", payload);
+    showLoading(true);
+    try {
+        const updated = await api("PUT", `${ENDPOINTS.games}/${encodeURIComponent(id)}`, payload);
+        console.log("[Games] updated:", updated);
+        showToast("Game updated successfully!", "success");
+        const idx = allGames.findIndex(g => String(g.id) === String(id));
+        if (idx !== -1) allGames[idx] = updated;
+        renderGames(allGames);
+        hideEditGameForm();
+        clearErrors("game");
+    } catch (err) {
+        console.error("[Games] updateGame failed:", err);
+        showToast("Failed to update game.", "error");
+    } finally {
+        showLoading(false);
+    }
+}
+ 
+/*
+   DELETE - Remove a game from the database.
+   ON DELETE CASCADE removes its reviews and wishlist entries too.
+*/
+async function deleteGame(id) {
+    console.log("[Games] deleteGame() id:", id);
+    if (!confirm("Are you sure you want to delete this game?\nThis will also delete its reviews and wishlist entries.")) return;
+    showLoading(true);
+    try {
+        await api("DELETE", `${ENDPOINTS.games}/${encodeURIComponent(id)}`);
+        console.log("[Games] deleted id:", id);
+        showToast("Game deleted!", "success");
+        allGames = allGames.filter(g => String(g.id) !== String(id));
+        renderGames(allGames);
+    } catch (err) {
+        console.error("[Games] deleteGame failed:", err);
+        showToast("Failed to delete game.", "error");
+    } finally {
+        showLoading(false);
+    }
+}
+
 
 // --- EVENT HANDLERS ---
 
 $(document).ready(function() {
-    console.log("[DOM] document.ready — initialising handlers and loading data");
+    console.log("[DOM] document.ready - initialising handlers and loading data");
  
     // load all data on page load
     loadGames();
@@ -214,5 +277,45 @@ $(document).ready(function() {
         };
         saveGame(payload);
     }); 
+
+    // Edit game button- show form filled with current values
+    $(document).on("click", ".btn-edit-game", function() {
+        const $row = $(this).closest("tr");
+        showEditGameForm(
+            $row.data("id"),
+            $row.find("td:eq(1)").text(),
+            $row.find("td:eq(2)").text(),
+            $row.find("td:eq(0) img").attr("src"),
+            $row.find("td:eq(3)").text()
+        );
+    });
+ 
+    // Save game edit- validate, build payload here and pass to updateGame()
+    $(document).on("click", "#btn-save-game-edit", function() {
+        if (!validateGameForm()) return;
+        const id = $("#edit-game-id").val();
+        const payload = {
+            title:        $("#edit-game-title").val().trim(),
+            genre:        $("#edit-game-genre").val().trim(),
+            image_url:    $("#edit-game-image").val().trim(),
+            release_date: $("#edit-game-date").val()
+        };
+        updateGame(id, payload);
+    });
+ 
+    // Cancel game edit
+    $(document).on("click", "#btn-cancel-game-edit", function() {
+        hideEditGameForm();
+    });
+ 
+    // Delete game button
+    $(document).on("click", ".btn-delete-game", function() {
+        deleteGame($(this).closest("tr").data("id"));
+    });
+ 
+    // View reviews button
+    $(document).on("click", ".btn-view-reviews", function() {
+        loadReviews($(this).data("id"));
+    });
 
 });
