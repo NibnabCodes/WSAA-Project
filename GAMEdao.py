@@ -131,14 +131,16 @@ class GameDAO:
  
  # Convert SQL result to dictionary
     def convertToGameDictionary(self, resultLine):
-        return {
-            "id": resultLine[0],
-            "rawg_id": resultLine[1],
-            "title": resultLine[2],
-            "genre": resultLine[3],
-            "image_url": resultLine[4],
-            "release_date": resultLine[5]
-        }
+        attkeys = ["id", "rawg_id", "title", "genre", "image_url", "release_date"]
+        game = {}
+        currentkey = 0
+        for attrib in resultLine:
+            if attkeys[currentkey] == "release_date" and attrib is not None:
+                game[attkeys[currentkey]] = str(attrib)  # convert date to string
+            else:
+                game[attkeys[currentkey]] = attrib
+            currentkey += 1
+        return game
     
 #
 # Reviews Table CRUD Operations
@@ -161,7 +163,7 @@ class GameDAO:
         return returnArray
 
 # Get reviews by game ID
-    def getReviewsByGameID(self, game_id):
+    def getReviewByID(self, game_id):
         connection, cursor = self.getcursor()
 
         sql = "SELECT * FROM reviews WHERE game_id = %s"
@@ -269,6 +271,23 @@ class GameDAO:
         connection.close()
 
         return returnArray
+
+# Get wishlist entry by ID
+    def getWishlistByID(self, id):
+        connection, cursor = self.getcursor()
+
+        sql = "SELECT * FROM wishlist WHERE id = %s"
+        values = (id,)
+
+        cursor.execute(sql, values)
+        result = cursor.fetchone()
+
+        cursor.close()
+        connection.close()
+
+        if result:
+            return self.convertToWishlistDictionary(result)
+        return None
 
 # Create wishlist entry
     def createWishlist(self, wishlist):

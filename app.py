@@ -33,7 +33,9 @@ def create_game():
 def update_game(id):
     game = request.json
     dao.gameDAO.updateGame(id, game)
-    return jsonify({"message": "Game updated successfully"})
+    # return the full updated game instead of just a message
+    updatedGame = dao.gameDAO.getGameByID(id)
+    return jsonify(updatedGame)
 
 # Delete a game
 @app.route('/api/games/<int:id>', methods=['DELETE'])
@@ -72,7 +74,7 @@ def search_game(game_name):
 # Get reviews by ID
 @app.route('/api/reviews/<int:game_id>', methods=['GET'])
 def get_reviews(game_id):
-    return jsonify(dao.gameDAO.getReviewsByGameID(game_id))
+    return jsonify(dao.gameDAO.getReviewByID(game_id))
 
 # Create review
 @app.route('/api/reviews', methods=['POST'])
@@ -85,7 +87,8 @@ def create_review():
 def update_review(id):
     review = request.json
     dao.gameDAO.updateReview(id, review)
-    return jsonify({"message": "Review updated successfully"})
+    updatedReview = dao.gameDAO.getReviewByID(id)
+    return jsonify(updatedReview)
 
 # Delete review
 @app.route('/api/reviews/<int:id>', methods=['DELETE'])
@@ -111,7 +114,8 @@ def create_wishlist():
 def update_wishlist(id):
     wishlist = request.json
     dao.gameDAO.updateWishlist(id, wishlist)
-    return jsonify({"message": "Wishlist updated successfully"})
+    updatedWishlist = dao.gameDAO.getWishlistByID(id)
+    return jsonify(updatedWishlist)
 
 # Delete wishlist entry
 @app.route('/api/wishlist/<int:id>', methods=['DELETE'])
