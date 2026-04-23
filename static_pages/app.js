@@ -42,7 +42,7 @@ function api(method, path, data) {
     });
 }
 
-// ---- Utilities -----
+// ---- UTILITIES -----
 /*
    Show or hide the loading spinner.
 */
@@ -84,7 +84,7 @@ function getNow() {
     return new Date().toISOString().slice(0, 19).replace("T", " ");
 }  
 
-// ----- Validation Helpers -------
+// ----- VALIDATION HELPERS -------
  
 /*
    Clear all error messages for a given group.
@@ -100,7 +100,7 @@ function setError(group, name, message) {
     $(`.${group}-error[data-for="${name}"]`).text(message || "");
 }
 
-// ---- State ----
+// ---- STATE ----
 
 let allGames    = [];   
 let allReviews  = [];   
@@ -293,7 +293,59 @@ function validateGameForm() {
 }
  
 // --- RAWG SEARCH ---
+/*
+   Search RAWG API for games by name.
+*/
+async function searchGames() {
+    const query = $("#search-input").val().trim();
+    console.log("[Search] searchGames() called, query:", query);
+ 
+    if (!query) {
+        showToast("Please enter a game name!", "error");
+        return;
+    }
+ 
+    showLoading(true);
+    try {
+        const data = await api("GET", `${ENDPOINTS.search}/${encodeURIComponent(query)}`);
+        console.log("[Search] results:", data);
+ 
+        const $resultsDiv = $("#search-results");
+        $resultsDiv.empty();
+ 
+        if (!Array.isArray(data) || data.length === 0) {
+            $resultsDiv.append("<p>No games found. Try a different search.</p>");
+            return;
+        }
+ 
+        let html = "";
+        for (const game of data) {
+            html +=
+                `<div class="search-result">` +
+                    `<img src="${escapeHtml(game.image_url)}" alt="${escapeHtml(game.title)}" width="60">` +
+                    `<span>${escapeHtml(game.title)} (${escapeHtml(game.release_date)})</span>` +
+                    `<button class="btn-save-game"` +
+                        ` data-rawgid="${escapeHtml(game.rawg_id)}"` +
+                        ` data-title="${escapeHtml(game.title)}"` +
+                        ` data-genre="${escapeHtml(game.genre)}"` +
+                        ` data-image="${escapeHtml(game.image_url)}"` +
+                        ` data-date="${escapeHtml(game.release_date)}">` +
+                        `Save to Collection` +
+                    `</button>` +
+                `</div>`;
+        }
+        $resultsDiv.html(html);
+ 
+    } catch (err) {
+        console.error("[Search] searchGames failed:", err);
+        showToast("Search failed. Please try again.", "error");
+    } finally {
+        showLoading(false);
+        console.log("[Search] searchGames() finished");
+    }
+}
 
+// --- HELPERS ----
 
 // --- EVENT HANDLERS ---
 
