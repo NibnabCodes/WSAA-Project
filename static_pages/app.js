@@ -702,6 +702,24 @@ function validateWishlistForm() {
     return ok;
 
 // --- HELPERS ----
+/*
+   Populate the game dropdowns in the reviews and wishlist forms.
+   Called every time renderGames() runs so dropdowns stay up to date.
+*/
+function populateGameDropdowns(games) {
+    console.log("[Helpers] populateGameDropdowns() count:", games.length);
+    const $reviewSelect   = $("#review-game-id");
+    const $wishlistSelect = $("#wishlist-game-id");
+ 
+    $reviewSelect.empty().append('<option value="">Select a game...</option>');
+    $wishlistSelect.empty().append('<option value="">Select a game...</option>');
+ 
+    for (const game of games) {
+        const option = `<option value="${escapeHtml(game.id)}">${escapeHtml(game.title)}</option>`;
+        $reviewSelect.append(option);
+        $wishlistSelect.append(option);
+    }
+}
 
 // --- EVENT HANDLERS ---
 
