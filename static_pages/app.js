@@ -253,6 +253,47 @@ async function deleteGame(id) {
     }
 }
 
+// Show and fill the edit game form
+function showEditGameForm(id, title, genre, image_url, release_date) {
+    console.log("[Games] showEditGameForm() id:", id);
+    clearErrors("game");
+    $("#edit-game-form").show();
+    $("#edit-game-id").val(id);
+    $("#edit-game-title").val(title);
+    $("#edit-game-genre").val(genre);
+    $("#edit-game-image").val(image_url);
+    $("#edit-game-date").val(release_date);
+}
+ 
+// Hide the edit game form
+function hideEditGameForm() {
+    $("#edit-game-form").hide();
+    clearErrors("game");
+}
+ 
+// Validate game edit form before submitting
+function validateGameForm() {
+    let ok = true;
+    clearErrors("game");
+ 
+    if (!$("#edit-game-title").val().trim()) {
+        setError("game", "title", "Title is required");
+        ok = false;
+    }
+    if (!$("#edit-game-genre").val().trim()) {
+        setError("game", "genre", "Genre is required");
+        ok = false;
+    }
+    if (!$("#edit-game-date").val()) {
+        setError("game", "date", "Release date is required");
+        ok = false;
+    }
+    console.log("[Games] validateGameForm ok?", ok);
+    return ok;
+}
+ 
+// --- RAWG SEARCH ---
+
 
 // --- EVENT HANDLERS ---
 

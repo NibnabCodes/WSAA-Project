@@ -32,6 +32,7 @@ API Layer: https://api.jquery.com/jquery.ajax/; https://www.w3schools.com/js/js_
 toggleClass(): https://api.jquery.com/toggleClass/  
 addClass(): https://api.jquery.com/addClass/  
 JavaScript Date & toISOString(): https://www.w3schools.com/js/js_dates.asp  
+Show/Hide form functions: https://www.geeksforgeeks.org/jquery/how-to-show-hide-an-element-using-jquery/  
 
 
 
