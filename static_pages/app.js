@@ -536,6 +536,170 @@ function validateEditReviewForm() {
 }
 
 // ---- WISHLIST -----
+/*
+   Render the wishlist table 
+*/
+function renderWishlist(wishlist) {
+    console.log("[Render] renderWishlist() start, count:", wishlist.length);
+ 
+    const $tbody = $("#wishlist-body");
+    if ($tbody.length === 0) {
+        console.error("[Render] #wishlist-body NOT FOUND in DOM!");
+        return;
+    }
+ 
+    $tbody.empty();
+ 
+    if (!Array.isArray(wishlist)) {
+        console.error("[Render] Expected array, got:", wishlist);
+        $("#wishlist-count").text("0");
+        $tbody.append(`<tr><td colspan="5">Invalid data received.</td></tr>`);
+        return;
+    }
+ 
+    if (wishlist.length === 0) {
+        $tbody.append(`<tr><td colspan="5">Your wishlist is empty.</td></tr>`);
+        $("#wishlist-count").text("0");
+        return;
+    }
+ 
+    let rowsHtml = "";
+    for (const entry of wishlist) {
+        rowsHtml +=
+            `<tr data-id="${escapeHtml(entry.id)}">` +
+                `<td>${escapeHtml(entry.game_id)}</td>` +
+                `<td>${escapeHtml(entry.priority)}</td>` +
+                `<td>${escapeHtml(entry.notes)}</td>` +
+                `<td>${escapeHtml(entry.date_added)}</td>` +
+                `<td>` +
+                    `<button class="btn-edit-wishlist">Edit</button>` +
+                    `<button class="btn-delete-wishlist">Delete</button>` +
+                `</td>` +
+            `</tr>`;
+    }
+ 
+    console.log("[Render] built rowsHtml length:", rowsHtml.length);
+    $tbody.html(rowsHtml);
+    $("#wishlist-count").text(String(wishlist.length));
+    console.log("[Render] done. Rows now in DOM:", $("#wishlist-body tr").length);
+}
+
+/*
+   GET all wishlist entries.
+*/
+async function loadWishlist() {
+    console.log("[Wishlist] loadWishlist() called");
+    showLoading(true);
+    try {
+        const data = await api("GET", ENDPOINTS.wishlist);
+        console.log("[Wishlist] GET response:", data);
+        if (Array.isArray(data)) {
+            allWishlist = data;
+            renderWishlist(allWishlist);
+        } else {
+            showToast("Unexpected response from server.", "error");
+            renderWishlist([]);
+        }
+    } catch (err) {
+        console.error("[Wishlist] loadWishlist failed:", err);
+        showToast("Failed to load wishlist.", "error");
+        renderWishlist([]);
+    } finally {
+        showLoading(false);
+        console.log("[Wishlist] loadWishlist() finished");
+    }
+}
+ 
+/*
+   POST- Add a game to the wishlist.
+*/
+async function createWishlist(payload) {
+    console.log("[Wishlist] createWishlist() payload:", payload);
+    showLoading(true);
+    try {
+        const created = await api("POST", ENDPOINTS.wishlist, payload);
+        console.log("[Wishlist] created:", created);
+        showToast("Added to wishlist!", "success");
+        allWishlist.push(created);
+        renderWishlist(allWishlist);
+        $("#wishlist-notes").val("");
+        clearErrors("wishlist");
+    } catch (err) {
+        console.error("[Wishlist] createWishlist failed:", err);
+        showToast("Failed to add to wishlist.", "error");
+    } finally {
+        showLoading(false);
+    }
+}
+ 
+/*
+   PUT- Update a wishlist entry.
+*/
+async function updateWishlist(id, payload) {
+    console.log("[Wishlist] updateWishlist() id:", id, "payload:", payload);
+    showLoading(true);
+    try {
+        const updated = await api("PUT", `${ENDPOINTS.wishlist}/${encodeURIComponent(id)}`, payload);
+        console.log("[Wishlist] updated:", updated);
+        showToast("Wishlist updated successfully!", "success");
+        const idx = allWishlist.findIndex(w => String(w.id) === String(id));
+        if (idx !== -1) allWishlist[idx] = updated;
+        renderWishlist(allWishlist);
+        hideEditWishlistForm();
+    } catch (err) {
+        console.error("[Wishlist] updateWishlist failed:", err);
+        showToast("Failed to update wishlist.", "error");
+    } finally {
+        showLoading(false);
+    }
+}
+ 
+/*
+   DELETE - Remove a wishlist entry.
+*/
+async function deleteWishlist(id) {
+    console.log("[Wishlist] deleteWishlist() id:", id);
+    if (!confirm("Are you sure you want to remove this from your wishlist?")) return;
+    showLoading(true);
+    try {
+        await api("DELETE", `${ENDPOINTS.wishlist}/${encodeURIComponent(id)}`);
+        console.log("[Wishlist] deleted id:", id);
+        showToast("Removed from wishlist!", "success");
+        allWishlist = allWishlist.filter(w => String(w.id) !== String(id));
+        renderWishlist(allWishlist);
+    } catch (err) {
+        console.error("[Wishlist] deleteWishlist failed:", err);
+        showToast("Failed to remove from wishlist.", "error");
+    } finally {
+        showLoading(false);
+    }
+}
+ 
+// Show and fill the edit wishlist form
+function showEditWishlistForm(id, priority, notes) {
+    console.log("[Wishlist] showEditWishlistForm() id:", id);
+    $("#edit-wishlist-form").show();
+    $("#edit-wishlist-id").val(id);
+    $("#edit-wishlist-priority").val(priority);
+    $("#edit-wishlist-notes").val(notes);
+}
+ 
+// Hide the edit wishlist form
+function hideEditWishlistForm() {
+    $("#edit-wishlist-form").hide();
+}
+ 
+// Validate wishlist form before submitting
+function validateWishlistForm() {
+    let ok = true;
+    clearErrors("wishlist");
+}
+    if (!$("#wishlist-game-id").val()) {
+        setError("wishlist", "game_id", "Please select a game");
+        ok = false;
+    }
+    console.log("[Wishlist] validateWishlistForm ok?", ok);
+    return ok;
 
 // --- HELPERS ----
 
@@ -646,6 +810,48 @@ $(document).ready(function() {
     // Delete review button
     $(document).on("click", ".btn-delete-review", function() {
         deleteReview($(this).closest("tr").data("id"));
+    });
+
+    // Add to wishlist- validate, build payload here and pass to createWishlist()
+    $(document).on("click", "#btn-add-wishlist", function() {
+        if (!validateWishlistForm()) return;
+        const payload = {
+            game_id:    $("#wishlist-game-id").val(),
+            priority:   $("#wishlist-priority").val(),
+            notes:      $("#wishlist-notes").val().trim(),
+            date_added: getNow()
+        };
+        createWishlist(payload);
+    });
+ 
+    // Edit wishlist button — show form filled with current values
+    $(document).on("click", ".btn-edit-wishlist", function() {
+        const $row = $(this).closest("tr");
+        showEditWishlistForm(
+            $row.data("id"),
+            $row.find("td:eq(1)").text(),
+            $row.find("td:eq(2)").text()
+        );
+    });
+ 
+    // Save wishlist edit — build payload here and pass to updateWishlist()
+    $(document).on("click", "#btn-save-wishlist-edit", function() {
+        const id = $("#edit-wishlist-id").val();
+        const payload = {
+            priority: $("#edit-wishlist-priority").val(),
+            notes:    $("#edit-wishlist-notes").val().trim()
+        };
+        updateWishlist(id, payload);
+    });
+ 
+    // Cancel wishlist edit
+    $(document).on("click", "#btn-cancel-wishlist-edit", function() {
+        hideEditWishlistForm();
+    });
+ 
+    // Delete wishlist button
+    $(document).on("click", ".btn-delete-wishlist", function() {
+        deleteWishlist($(this).closest("tr").data("id"));
     });
 
 });
