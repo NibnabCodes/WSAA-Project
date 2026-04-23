@@ -260,7 +260,13 @@ class GameDAO:
     def getAllWishlist(self):
         connection, cursor = self.getcursor()
 
-        cursor.execute("SELECT * FROM wishlist")
+        sql = """
+            SELECT wishlist.id, games.title, wishlist.priority, 
+                wishlist.notes, wishlist.date_added
+            FROM wishlist
+            JOIN games ON wishlist.game_id = games.id
+        """
+        cursor.execute(sql)
         results = cursor.fetchall()
 
         returnArray = []
@@ -354,12 +360,12 @@ class GameDAO:
  
 # Convert SQL result to dictionary
     def convertToWishlistDictionary(self, resultLine):
-        attkeys = ["id", "game_id", "priority", "notes", "date_added"]
+        attkeys = ["id", "title", "priority", "notes", "date_added"]
         wishlist = {}
         currentkey = 0
         for attrib in resultLine:
             wishlist[attkeys[currentkey]] = attrib
-            currentkey = currentkey + 1
+            currentkey += 1
         return wishlist
     
 gameDAO = GameDAO()

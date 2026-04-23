@@ -567,7 +567,7 @@ function renderWishlist(wishlist) {
     for (const entry of wishlist) {
         rowsHtml +=
             `<tr data-id="${escapeHtml(entry.id)}">` +
-                `<td>${escapeHtml(entry.game_id)}</td>` +
+                `<td>${escapeHtml(entry.title)}</td>` +
                 `<td>${escapeHtml(entry.priority)}</td>` +
                 `<td>${escapeHtml(entry.notes)}</td>` +
                 `<td>${escapeHtml(entry.date_added)}</td>` +
