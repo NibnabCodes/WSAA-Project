@@ -345,6 +345,198 @@ async function searchGames() {
     }
 }
 
+// -- REVIEWS ---
+/*
+   Render the reviews table from the cached allReviews array.
+*/
+function renderReviews(reviews) {
+    console.log("[Render] renderReviews() start, count:", reviews.length);
+ 
+    const $tbody = $("#reviews-body");
+    if ($tbody.length === 0) {
+        console.error("[Render] #reviews-body NOT FOUND in DOM!");
+        return;
+    }
+ 
+    $tbody.empty();
+ 
+    if (!Array.isArray(reviews)) {
+        console.error("[Render] Expected array, got:", reviews);
+        $("#reviews-count").text("0");
+        $tbody.append(`<tr><td colspan="5">Invalid data received.</td></tr>`);
+        return;
+    }
+ 
+    if (reviews.length === 0) {
+        $tbody.append(`<tr><td colspan="5">No reviews yet for this game.</td></tr>`);
+        $("#reviews-count").text("0");
+        return;
+    }
+ 
+    let rowsHtml = "";
+    for (const review of reviews) {
+        const recommended = review.recommended ? "Recommended" : "Not Recommended";
+        rowsHtml +=
+            `<tr data-id="${escapeHtml(review.id)}">` +
+                `<td>${escapeHtml(review.game_id)}</td>` +
+                `<td>${escapeHtml(recommended)}</td>` +
+                `<td>${escapeHtml(review.comment)}</td>` +
+                `<td>${escapeHtml(review.date_added)}</td>` +
+                `<td>` +
+                    `<button class="btn-edit-review">Edit</button>` +
+                    `<button class="btn-delete-review">Delete</button>` +
+                `</td>` +
+            `</tr>`;
+    }
+ 
+    console.log("[Render] built rowsHtml length:", rowsHtml.length);
+    $tbody.html(rowsHtml);
+    $("#reviews-count").text(String(reviews.length));
+    console.log("[Render] done. Rows now in DOM:", $("#reviews-body tr").length);
+}
+ 
+/*
+   GET all reviews for a specific game.
+*/
+async function loadReviews(game_id) {
+    console.log("[Reviews] loadReviews() called, game_id:", game_id);
+    showLoading(true);
+    try {
+        const data = await api("GET", `${ENDPOINTS.reviews}/${encodeURIComponent(game_id)}`);
+        console.log("[Reviews] GET response:", data);
+        if (Array.isArray(data)) {
+            allReviews = data;
+            renderReviews(allReviews);
+        } else {
+            showToast("Unexpected response from server.", "error");
+            renderReviews([]);
+        }
+    } catch (err) {
+        console.error("[Reviews] loadReviews failed:", err);
+        showToast("Failed to load reviews.", "error");
+        renderReviews([]);
+    } finally {
+        showLoading(false);
+        console.log("[Reviews] loadReviews() finished");
+    }
+}
+ 
+/*
+   POST - Create a new review.
+   Payload is built in the event handler and passed in.
+*/
+async function createReview(payload) {
+    console.log("[Reviews] createReview() payload:", payload);
+    showLoading(true);
+    try {
+        const created = await api("POST", ENDPOINTS.reviews, payload);
+        console.log("[Reviews] created:", created);
+        showToast("Review added successfully!", "success");
+        allReviews.push(created);
+        renderReviews(allReviews);
+        $("#review-comment").val("");
+        clearErrors("review");
+    } catch (err) {
+        console.error("[Reviews] createReview failed:", err);
+        showToast("Failed to add review.", "error");
+    } finally {
+        showLoading(false);
+    }
+}
+ 
+/*
+   PUT - Update an existing review.
+   id and payload are built in the event handler and passed in.
+*/
+async function updateReview(id, payload) {
+    console.log("[Reviews] updateReview() id:", id, "payload:", payload);
+    showLoading(true);
+    try {
+        const updated = await api("PUT", `${ENDPOINTS.reviews}/${encodeURIComponent(id)}`, payload);
+        console.log("[Reviews] updated:", updated);
+        showToast("Review updated successfully!", "success");
+        const idx = allReviews.findIndex(r => String(r.id) === String(id));
+        if (idx !== -1) allReviews[idx] = updated;
+        renderReviews(allReviews);
+        hideEditReviewForm();
+        clearErrors("edit-review");
+    } catch (err) {
+        console.error("[Reviews] updateReview failed:", err);
+        showToast("Failed to update review.", "error");
+    } finally {
+        showLoading(false);
+    }
+}
+ 
+/*
+   DELETE - Remove a review.
+*/
+async function deleteReview(id) {
+    console.log("[Reviews] deleteReview() id:", id);
+    if (!confirm("Are you sure you want to delete this review?")) return;
+    showLoading(true);
+    try {
+        await api("DELETE", `${ENDPOINTS.reviews}/${encodeURIComponent(id)}`);
+        console.log("[Reviews] deleted id:", id);
+        showToast("Review deleted!", "success");
+        allReviews = allReviews.filter(r => String(r.id) !== String(id));
+        renderReviews(allReviews);
+    } catch (err) {
+        console.error("[Reviews] deleteReview failed:", err);
+        showToast("Failed to delete review.", "error");
+    } finally {
+        showLoading(false);
+    }
+}
+ 
+// Show and fill the edit review form
+function showEditReviewForm(id, recommended, comment) {
+    console.log("[Reviews] showEditReviewForm() id:", id);
+    clearErrors("edit-review");
+    $("#edit-review-form").show();
+    $("#edit-review-id").val(id);
+    $("#edit-review-recommended").val(recommended);
+    $("#edit-review-comment").val(comment);
+}
+ 
+// Hide the edit review form
+function hideEditReviewForm() {
+    $("#edit-review-form").hide();
+    clearErrors("edit-review");
+}
+ 
+// Validate add review form before submitting
+function validateReviewForm() {
+    let ok = true;
+    clearErrors("review");
+ 
+    if (!$("#review-game-id").val()) {
+        setError("review", "game_id", "Please select a game");
+        ok = false;
+    }
+    if (!$("#review-comment").val().trim()) {
+        setError("review", "comment", "Comment is required");
+        ok = false;
+    }
+    console.log("[Reviews] validateReviewForm ok?", ok);
+    return ok;
+}
+ 
+// Validate edit review form before submitting
+function validateEditReviewForm() {
+    let ok = true;
+    clearErrors("edit-review");
+ 
+    if (!$("#edit-review-comment").val().trim()) {
+        setError("edit-review", "comment", "Comment is required");
+        ok = false;
+    }
+    console.log("[Reviews] validateEditReviewForm ok?", ok);
+    return ok;
+}
+
+// ---- WISHLIST -----
+
 // --- HELPERS ----
 
 // --- EVENT HANDLERS ---
@@ -409,6 +601,51 @@ $(document).ready(function() {
     // View reviews button
     $(document).on("click", ".btn-view-reviews", function() {
         loadReviews($(this).data("id"));
+    });
+
+    // ---- REVIEWS ----
+ 
+    // Submit review - validate, build payload here and pass to createReview()
+    $(document).on("click", "#btn-submit-review", function() {
+        if (!validateReviewForm()) return;
+        const payload = {
+            game_id:     $("#review-game-id").val(),
+            recommended: $("#review-recommended").val(),
+            comment:     $("#review-comment").val().trim(),
+            date_added:  getNow()
+        };
+        createReview(payload);
+    });
+ 
+    // Edit review button - show form filled with current values
+    $(document).on("click", ".btn-edit-review", function() {
+        const $row = $(this).closest("tr");
+        showEditReviewForm(
+            $row.data("id"),
+            $row.find("td:eq(1)").text().includes("Recommended") ? 1 : 0,
+            $row.find("td:eq(2)").text()
+        );
+    });
+ 
+    // Save review edit - validate, build payload here and pass to updateReview()
+    $(document).on("click", "#btn-save-review-edit", function() {
+        if (!validateEditReviewForm()) return;
+        const id = $("#edit-review-id").val();
+        const payload = {
+            recommended: $("#edit-review-recommended").val(),
+            comment:     $("#edit-review-comment").val().trim()
+        };
+        updateReview(id, payload);
+    });
+ 
+    // Cancel review edit
+    $(document).on("click", "#btn-cancel-review-edit", function() {
+        hideEditReviewForm();
+    });
+ 
+    // Delete review button
+    $(document).on("click", ".btn-delete-review", function() {
+        deleteReview($(this).closest("tr").data("id"));
     });
 
 });

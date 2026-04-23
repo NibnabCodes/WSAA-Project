@@ -35,8 +35,9 @@ JavaScript Date & toISOString(): https://www.w3schools.com/js/js_dates.asp
 Show/Hide form functions: https://www.geeksforgeeks.org/jquery/how-to-show-hide-an-element-using-jquery/  
 HTML data attributes: https://www.w3schools.com/tags/att_data-.asp  
 encodeURIComponent(): https://www.w3schools.com/jsref/jsref_encodeURIComponent.asp  
-RAWG API: https://rawg.io/apidocs
-
+RAWG API: https://rawg.io/apidocs  
+-$(this): https://www.geeksforgeeks.org/jquery/difference-between-this-and-this-in-jquery/  
+-.val() & .trim(): https://api.jquery.com/val/; https://www.w3schools.com/jsref/jsref_trim_string.asp
 
 
 
