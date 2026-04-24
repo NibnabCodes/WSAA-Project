@@ -378,7 +378,7 @@ function renderReviews(reviews) {
         const recommended = review.recommended ? "Recommended" : "Not Recommended";
         rowsHtml +=
             `<tr data-id="${escapeHtml(review.id)}">` +
-                `<td>${escapeHtml(review.game_id)}</td>` +
+                `<td>${escapeHtml(review.title)}</td>` +
                 `<td>${escapeHtml(recommended)}</td>` +
                 `<td>${escapeHtml(review.comment)}</td>` +
                 `<td>${escapeHtml(review.date_added)}</td>` +
