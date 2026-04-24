@@ -1,20 +1,14 @@
 import mysql.connector
 import config as cfg
- 
+
 class GameDAO:
-    connection = ""
-    cursor = ""
-    host =      ""
-    user =      ""
-    password =  ""
-    database =  ""
- 
+
     def __init__(self):
-        self.host =     cfg.mysql["host"]
-        self.user =     cfg.mysql["user"]
+        self.host = cfg.mysql["host"]
+        self.user = cfg.mysql["user"]
         self.password = cfg.mysql["password"]
         self.database = cfg.mysql["database"]
- 
+
     def getcursor(self):
         connection = mysql.connector.connect(
             host=self.host,
@@ -22,9 +16,10 @@ class GameDAO:
             password=self.password,
             database=self.database
         )
+
         cursor = connection.cursor()
-        return connection, connection.cursor()
-        
+        return connection, cursor
+
 #
 # Games Table CRUD Operations
 #
