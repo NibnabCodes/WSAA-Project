@@ -42,4 +42,13 @@ Javascript Error Statements utilised: https://www.w3schools.com/js/js_errors.asp
 .empty() & .append(): https://api.jquery.com/empty/; https://api.jquery.com/append/ 
 
 
-## References for styles.css:
+## References for styles.css:  
+The CSS styling for the application was generated with the assistance of the AI tool Claude.
+
+Prompt used:  
+"Hello Claude!
+Please write a complete style.css file for my Flask web application called GameVault in a Cyberpunk 2077 style. See my index.html  attached.
+
+Also, please  write the complete style.css file with comments explaining each section. Also include the toast and loading spinner styles."
+
+Source: https://claude.ai/share/625130ae-f3fd-4589-96e9-303725b70a99 

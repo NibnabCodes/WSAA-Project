@@ -1,3 +1,808 @@
-/* All CSS styling that controls the look and feel of the web page is contained in this file. It is linked to the index.html file and will be applied to all elements on the page
-/* Author: Niamh Hogan
-*/
+/* --------------------------------------------------------------------------
+   Source:
+   https://claude.ai/share/625130ae-f3fd-4589-96e9-303725b70a99 
+   -------------------------------------------------------------------------- */
+
+/* ==========================================================================
+   GAMEVAULT — CYBERPUNK 2077 THEME
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   1. GOOGLE FONTS IMPORT
+   Orbitron: futuristic display font for headings
+   Share Tech Mono: monospaced techy font for body/UI text
+   -------------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&display=swap');
+
+
+/* --------------------------------------------------------------------------
+   2. CSS CUSTOM PROPERTIES (Design Tokens)
+   All colours, shadows, and transitions defined here for consistency.
+   -------------------------------------------------------------------------- */
+:root {
+    /* Core Palette */
+    --yellow:       #f9e000;   /* Cyberpunk primary yellow */
+    --cyan:         #00f0ff;   /* Neon cyan / electric blue */
+    --magenta:      #ff0090;   /* Hot-pink accent */
+    --dark-bg:      #0a0a0f;   /* Near-black page background */
+    --panel-bg:     #0f0f1a;   /* Card / panel background */
+    --panel-border: #1e1e33;   /* Subtle panel border */
+    --text-primary: #e8e8f0;   /* Main body text */
+    --text-muted:   #6a6a8a;   /* Placeholder / muted text */
+
+    /* Glow shadows */
+    --glow-yellow:  0 0 8px #f9e000, 0 0 20px #f9e00066;
+    --glow-cyan:    0 0 8px #00f0ff, 0 0 20px #00f0ff66;
+    --glow-magenta: 0 0 8px #ff0090, 0 0 20px #ff009066;
+
+    /* Typography */
+    --font-display: 'Orbitron', monospace;
+    --font-body:    'Share Tech Mono', monospace;
+
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-mid:  0.3s ease;
+}
+
+
+/* --------------------------------------------------------------------------
+   3. RESET & BASE STYLES
+   Remove browser defaults and apply the cyberpunk canvas.
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-body);
+    font-size: 14px;
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+
+    /* Subtle scanline overlay for CRT feel */
+    background-image:
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 240, 255, 0.015) 2px,
+            rgba(0, 240, 255, 0.015) 4px
+        );
+    min-height: 100vh;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--dark-bg); }
+::-webkit-scrollbar-thumb {
+    background: var(--cyan);
+    box-shadow: var(--glow-cyan);
+}
+
+
+/* --------------------------------------------------------------------------
+   4. TYPOGRAPHY
+   Headings and text hierarchy.
+   -------------------------------------------------------------------------- */
+h1, h2, h3 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--yellow);
+    text-shadow: var(--glow-yellow);
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--yellow);
+    position: relative;
+}
+
+/* Animated underline accent on section headings */
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: var(--cyan);
+    box-shadow: var(--glow-cyan);
+    animation: scanPulse 2s ease-in-out infinite;
+}
+
+h3 {
+    font-size: 1rem;
+    color: var(--cyan);
+    text-shadow: var(--glow-cyan);
+    margin-bottom: 1rem;
+}
+
+a {
+    color: var(--cyan);
+    text-decoration: none;
+    transition: color var(--transition-fast), text-shadow var(--transition-fast);
+}
+
+a:hover {
+    color: var(--yellow);
+    text-shadow: var(--glow-yellow);
+}
+
+
+/* --------------------------------------------------------------------------
+   5. LAYOUT — CONTAINER
+   Centered max-width wrapper with side padding.
+   -------------------------------------------------------------------------- */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   6. NAVIGATION BAR
+   Fixed top bar with glitch-edge underline.
+   -------------------------------------------------------------------------- */
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 2rem;
+    background: rgba(10, 10, 15, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid var(--yellow);
+    box-shadow: 0 2px 20px rgba(249, 224, 0, 0.25);
+}
+
+nav h1 {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--yellow);
+    text-shadow: var(--glow-yellow);
+    letter-spacing: 0.12em;
+}
+
+/* Navigation links */
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 0;
+    border-bottom: 2px solid transparent;
+    transition: color var(--transition-mid), border-color var(--transition-mid), text-shadow var(--transition-mid);
+}
+
+.nav-links a:hover {
+    color: var(--cyan);
+    text-shadow: var(--glow-cyan);
+    border-bottom-color: var(--cyan);
+}
+
+
+/* --------------------------------------------------------------------------
+   7. SECTIONS
+   Each page section (search, games, reviews, wishlist) styled as a panel.
+   -------------------------------------------------------------------------- */
+section {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-left: 3px solid var(--cyan);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.5s ease both;
+}
+
+/* Corner bracket decoration — top-left */
+section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    border-top: 2px solid var(--yellow);
+    border-right: 2px solid var(--yellow);
+}
+
+/* Corner bracket decoration — bottom-right */
+section::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 30px;
+    height: 30px;
+    border-bottom: 2px solid var(--magenta);
+    border-left: 2px solid var(--magenta);
+}
+
+
+/* --------------------------------------------------------------------------
+   8. SEARCH BAR
+   -------------------------------------------------------------------------- */
+#search-section {
+    border-left-color: var(--yellow);
+}
+
+.search-bar {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.search-bar input {
+    flex: 1;
+}
+
+/* Search results container */
+#search-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* Individual search result cards */
+#search-results .search-card {
+    background: rgba(0, 240, 255, 0.04);
+    border: 1px solid var(--cyan);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: background var(--transition-fast), box-shadow var(--transition-fast);
+    min-width: 220px;
+    flex: 1;
+}
+
+#search-results .search-card:hover {
+    background: rgba(0, 240, 255, 0.1);
+    box-shadow: var(--glow-cyan);
+}
+
+#search-results .search-card img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border: 1px solid var(--panel-border);
+}
+
+#search-results .search-card-info span {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+#search-results .search-card-info strong {
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+}
+
+/* "Add" button inside search result card */
+#search-results .btn-add {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+
+/* --------------------------------------------------------------------------
+   9. FORM INPUTS & SELECTS
+   All interactive form controls share a unified neon style.
+   -------------------------------------------------------------------------- */
+input[type="text"],
+input[type="date"],
+input[type="url"],
+textarea,
+select {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-primary);
+    border: 1px solid var(--panel-border);
+    border-bottom: 2px solid var(--cyan);
+    padding: 0.6rem 0.9rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="url"]:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--yellow);
+    box-shadow: 0 2px 12px rgba(249, 224, 0, 0.2);
+    background: rgba(249, 224, 0, 0.04);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-muted);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+/* Custom select arrow */
+select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2300f0ff' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+    padding-right: 2.2rem;
+    cursor: pointer;
+}
+
+select option {
+    background: var(--panel-bg);
+    color: var(--text-primary);
+}
+
+/* Hidden input type (used for IDs) */
+input[type="hidden"] { display: none; }
+
+
+/* --------------------------------------------------------------------------
+   10. BUTTONS
+   Primary, secondary (cancel), and danger variants.
+   -------------------------------------------------------------------------- */
+button {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    cursor: pointer;
+    transition: background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shimmer effect on hover */
+button::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.4s ease;
+}
+
+button:hover::after { left: 130%; }
+button:active { transform: scale(0.97); }
+
+/* --- Primary (yellow) --- */
+button:not([id*="cancel"]):not([id*="delete"]):not([id*="remove"]) {
+    background: var(--yellow);
+    color: #0a0a0f;
+}
+
+button:not([id*="cancel"]):not([id*="delete"]):not([id*="remove"]):hover {
+    box-shadow: var(--glow-yellow);
+}
+
+/* --- Cancel (muted / ghost) --- */
+button[id*="cancel"] {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--panel-border);
+}
+
+button[id*="cancel"]:hover {
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+}
+
+/* --- Delete / Remove (danger magenta) --- */
+button.btn-delete,
+button.btn-remove {
+    background: var(--magenta);
+    color: #fff;
+}
+
+button.btn-delete:hover,
+button.btn-remove:hover {
+    box-shadow: var(--glow-magenta);
+}
+
+/* --- Edit (cyan outline) --- */
+button.btn-edit {
+    background: transparent;
+    color: var(--cyan);
+    border: 1px solid var(--cyan);
+}
+
+button.btn-edit:hover {
+    background: rgba(0, 240, 255, 0.1);
+    box-shadow: var(--glow-cyan);
+}
+
+/* --- Small action buttons (table rows) --- */
+button.btn-edit,
+button.btn-delete,
+button.btn-remove {
+    padding: 0.35rem 0.8rem;
+    font-size: 0.65rem;
+    margin: 0 0.2rem;
+}
+
+
+/* --------------------------------------------------------------------------
+   11. EDIT / ADD FORMS (inline panels)
+   Forms for editing games, reviews, and wishlist entries.
+   -------------------------------------------------------------------------- */
+#edit-game-form,
+#edit-review-form,
+#edit-wishlist-form,
+#add-review-form,
+#add-wishlist-form {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--cyan);
+    border-left: 3px solid var(--magenta);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    align-items: end;
+    animation: fadeInUp 0.25s ease both;
+}
+
+/* Form headings span full width */
+#edit-game-form h3,
+#edit-review-form h3,
+#edit-wishlist-form h3,
+#add-review-form h3,
+#add-wishlist-form h3 {
+    grid-column: 1 / -1;
+    margin-bottom: 0.25rem;
+}
+
+/* Textarea and select span full width in forms */
+#edit-game-form textarea,
+#add-review-form textarea,
+#edit-review-form textarea,
+#edit-game-form select,
+#add-review-form select,
+#edit-review-form select,
+#add-wishlist-form select,
+#edit-wishlist-form select {
+    grid-column: 1 / -1;
+}
+
+/* Button row at the bottom */
+#edit-game-form button,
+#edit-review-form button,
+#edit-wishlist-form button {
+    align-self: end;
+}
+
+/* Full-width submit buttons in add forms */
+#btn-submit-review,
+#btn-add-wishlist {
+    grid-column: 1 / -1;
+}
+
+
+/* --------------------------------------------------------------------------
+   12. DATA TABLES
+   Neon-bordered tables for games, reviews, and wishlist data.
+   -------------------------------------------------------------------------- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+thead {
+    background: rgba(249, 224, 0, 0.06);
+    border-bottom: 2px solid var(--yellow);
+}
+
+thead th {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--yellow);
+    text-shadow: var(--glow-yellow);
+    padding: 0.75rem 1rem;
+    text-align: left;
+}
+
+tbody tr {
+    border-bottom: 1px solid var(--panel-border);
+    transition: background var(--transition-fast);
+}
+
+tbody tr:hover {
+    background: rgba(0, 240, 255, 0.04);
+}
+
+tbody td {
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    vertical-align: middle;
+}
+
+/* Game thumbnail images in table */
+tbody td img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border: 1px solid var(--panel-border);
+    display: block;
+}
+
+/* Empty state rows */
+tbody tr.empty-row td {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2rem;
+    font-style: italic;
+}
+
+
+/* --------------------------------------------------------------------------
+   13. RECOMMENDED BADGE
+   Used in the Reviews table to show thumbs up/down.
+   -------------------------------------------------------------------------- */
+.badge {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0.25rem 0.6rem;
+    text-transform: uppercase;
+}
+
+.badge-recommended {
+    background: rgba(0, 240, 255, 0.1);
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    text-shadow: var(--glow-cyan);
+}
+
+.badge-not-recommended {
+    background: rgba(255, 0, 144, 0.1);
+    border: 1px solid var(--magenta);
+    color: var(--magenta);
+    text-shadow: var(--glow-magenta);
+}
+
+
+/* --------------------------------------------------------------------------
+   14. PRIORITY BADGE
+   Used in the Wishlist table.
+   -------------------------------------------------------------------------- */
+.priority-high   { color: var(--magenta); text-shadow: var(--glow-magenta); font-weight: bold; }
+.priority-medium { color: var(--yellow);  text-shadow: var(--glow-yellow);  font-weight: bold; }
+.priority-low    { color: var(--text-muted); }
+
+
+/* --------------------------------------------------------------------------
+   15. LOADING SPINNER
+   Full-page overlay with a rotating neon ring.
+   -------------------------------------------------------------------------- */
+#loading {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 15, 0.85);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--cyan);
+    text-shadow: var(--glow-cyan);
+    text-transform: uppercase;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Spinner ring */
+#loading::before {
+    content: '';
+    width: 56px;
+    height: 56px;
+    border: 3px solid rgba(0, 240, 255, 0.15);
+    border-top-color: var(--cyan);
+    border-right-color: var(--yellow);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+}
+
+/* "hidden" utility class — shared by #loading and #toast */
+.hidden {
+    display: none !important;
+}
+
+
+/* --------------------------------------------------------------------------
+   16. TOAST NOTIFICATION
+   Slides in from the top-right with a neon border.
+   -------------------------------------------------------------------------- */
+#toast {
+    position: fixed;
+    top: 5rem;
+    right: 1.5rem;
+    z-index: 9998;
+    min-width: 260px;
+    max-width: 380px;
+    padding: 0.9rem 1.2rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    background: var(--panel-bg);
+    border: 1px solid var(--cyan);
+    border-left: 4px solid var(--cyan);
+    color: var(--text-primary);
+    box-shadow: var(--glow-cyan), 0 8px 32px rgba(0,0,0,0.6);
+    animation: toastIn 0.3s ease both;
+}
+
+/* Error variant — swap cyan for magenta */
+#toast.toast-error {
+    border-color: var(--magenta);
+    border-left-color: var(--magenta);
+    box-shadow: var(--glow-magenta), 0 8px 32px rgba(0,0,0,0.6);
+}
+
+/* Success variant */
+#toast.toast-success {
+    border-color: var(--cyan);
+    border-left-color: var(--cyan);
+}
+
+
+/* --------------------------------------------------------------------------
+   17. KEYFRAME ANIMATIONS
+   -------------------------------------------------------------------------- */
+
+/* Spinner rotation */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Section / form fade-in from below */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Toast slide in from right */
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Pulsing underline scan on headings */
+@keyframes scanPulse {
+    0%, 100% { opacity: 1; width: 60px; }
+    50%       { opacity: 0.4; width: 120px; }
+}
+
+/* Glitch text flicker — apply with class .glitch */
+@keyframes glitch {
+    0%   { text-shadow: var(--glow-yellow); }
+    20%  { text-shadow: 2px 0 var(--magenta), -2px 0 var(--cyan); }
+    40%  { text-shadow: var(--glow-yellow); }
+    60%  { text-shadow: -2px 0 var(--magenta), 2px 0 var(--cyan); }
+    80%  { text-shadow: var(--glow-yellow); }
+    100% { text-shadow: var(--glow-yellow); }
+}
+
+/* Apply glitch to the main logo */
+nav h1 {
+    animation: glitch 4s ease-in-out infinite;
+}
+
+
+/* --------------------------------------------------------------------------
+   18. RESPONSIVE — TABLET & MOBILE
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+
+    nav {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+
+    .nav-links {
+        gap: 1.2rem;
+    }
+
+    .container {
+        padding: 1.5rem 1rem;
+        gap: 2rem;
+    }
+
+    section {
+        padding: 1.25rem;
+    }
+
+    /* Stack form grids to single column on mobile */
+    #edit-game-form,
+    #edit-review-form,
+    #edit-wishlist-form,
+    #add-review-form,
+    #add-wishlist-form {
+        grid-template-columns: 1fr;
+    }
+
+    /* Make tables horizontally scrollable on small screens */
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    #toast {
+        right: 1rem;
+        left: 1rem;
+        min-width: unset;
+    }
+}
+
+@media (max-width: 480px) {
+    nav h1 { font-size: 1.1rem; }
+    h2 { font-size: 1.1rem; }
+    .search-bar { flex-direction: column; }
+}
