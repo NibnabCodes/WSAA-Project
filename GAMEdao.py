@@ -273,27 +273,27 @@ class GameDAO:
         return returnArray
 
 # Get wishlist entry by ID
-def getWishlistByID(self, id):
-    connection, cursor = self.getcursor()
+    def getWishlistByID(self, id):
+        connection, cursor = self.getcursor()
 
-    sql = """
-        SELECT wishlist.id, games.title, wishlist.priority,
-               wishlist.notes, wishlist.date_added
-        FROM wishlist
-        JOIN games ON wishlist.game_id = games.id
-        WHERE wishlist.id = %s
-    """
-    values = (id,)
+        sql = """
+            SELECT wishlist.id, games.title, wishlist.priority,
+                wishlist.notes, wishlist.date_added
+            FROM wishlist
+            JOIN games ON wishlist.game_id = games.id
+            WHERE wishlist.id = %s
+        """
+        values = (id,)
 
-    cursor.execute(sql, values)
-    result = cursor.fetchone()
+        cursor.execute(sql, values)
+        result = cursor.fetchone()
 
-    cursor.close()
-    connection.close()
+        cursor.close()
+        connection.close()
 
-    if result:
-        return self.convertToWishlistDictionary(result)
-    return None
+        if result:
+            return self.convertToWishlistDictionary(result)
+        return None
 
 # Create wishlist entry
     def createWishlist(self, wishlist):
