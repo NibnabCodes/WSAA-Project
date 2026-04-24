@@ -21,7 +21,7 @@
     --yellow:        #f9e000;
     --cyan:          #00f0ff;
     --magenta:       #ff0090;
-    --green:         #00ff88;
+    --green:         #10ee40;
     --dark-bg:       #0a0a0f;
     --panel-bg:      #0f0f1a;
     --panel-border:  #1e1e33;
@@ -32,7 +32,7 @@
     --btn-yellow:    #ffe600;
     --btn-pink:      #ff2d78;
     --btn-cyan:      #00f0ff;
-    --btn-green:     #00ff88;
+    --btn-green:     #18eb23;
 
     /* Glow shadows */
     --glow-yellow:   0 0 6px #ffe600, 0 0 18px #ffe60055;
@@ -516,7 +516,7 @@ button::after {
     position: absolute;
     top: 0; left: -80%;
     width: 50%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    background: linear-gradient(90deg, transparent, rgba(30, 233, 11, 0.856), transparent);
     transform: skewX(-20deg);
     transition: left 0.4s ease;
     pointer-events: none;
@@ -769,7 +769,7 @@ tbody tr.empty-row td {
 #loading {
     position: fixed;
     inset: 0;
-    background: rgba(10, 10, 15, 0.88);
+    background: rgba(226, 22, 245, 0.88);
     backdrop-filter: blur(4px);
     display: flex;
     flex-direction: column;
