@@ -1,12 +1,7 @@
-/* --------------------------------------------------------------------------
-   Source:
-   https://claude.ai/share/625130ae-f3fd-4589-96e9-303725b70a99 
-   -------------------------------------------------------------------------- */
-
 /* ==========================================================================
    GAMEVAULT — CYBERPUNK 2077 THEME
+   A neon-soaked, glitch-drenched stylesheet for the future of game tracking.
    ========================================================================== */
-
 
 /* --------------------------------------------------------------------------
    1. GOOGLE FONTS IMPORT
@@ -156,53 +151,243 @@ a:hover {
 
 
 /* --------------------------------------------------------------------------
-   6. NAVIGATION BAR
-   Fixed top bar with glitch-edge underline.
+   6. HERO / NAVIGATION BLOCK
+   Full-width hero section with centered glitch title, subtitle,
+   and nav links sitting directly beneath in a centered row.
+   The <nav> element serves as the hero wrapper (sticky at top).
    -------------------------------------------------------------------------- */
 nav {
     position: sticky;
     top: 0;
     z-index: 100;
+    /* Stack hero content (title + subtitle + nav links) vertically, centered */
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    padding: 0.9rem 2rem;
-    background: rgba(10, 10, 15, 0.92);
-    backdrop-filter: blur(10px);
+    justify-content: center;
+    gap: 0;
+    padding: 2.2rem 2rem 0;
+    background: rgba(10, 10, 15, 0.96);
+    backdrop-filter: blur(12px);
     border-bottom: 2px solid var(--yellow);
-    box-shadow: 0 2px 20px rgba(249, 224, 0, 0.25);
+    box-shadow: 0 2px 30px rgba(249, 224, 0, 0.2);
+
+    /* All-4-corner bracket decorations via outline pseudo-elements */
+    /* We use a single box-shadow trick on ::before/::after for the 4 corners */
 }
 
-nav h1 {
-    font-size: 1.4rem;
+/* ── Corner brackets: top-left & top-right ── */
+nav::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 22px;
+    height: 22px;
+    border-top: 2px solid var(--cyan);
+    border-left: 2px solid var(--cyan);
+    pointer-events: none;
+}
+
+/* ── Corner brackets: bottom-left & bottom-right ── */
+nav::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 22px;
+    height: 22px;
+    border-bottom: 2px solid var(--magenta);
+    border-right: 2px solid var(--magenta);
+    pointer-events: none;
+}
+
+/* Extra corner brackets (top-right, bottom-left) via a wrapper span injected
+   with CSS — we use the .nav-corner-tr and .nav-corner-bl classes.
+   Because we can't add more pseudo-elements, we use box-shadow on nav
+   to fake the remaining two corners: */
+nav {
+    /* top-right corner (cyan) + bottom-left corner (magenta) */
+    box-shadow:
+        /* top-right */
+        calc(100% - 22px) 0px 0px 0px transparent,
+        /* bottom */
+        0 2px 30px rgba(249, 224, 0, 0.2);
+
+    outline: none;
+}
+
+/* 
+   Since CSS only allows 2 pseudo-elements per selector, we place the remaining
+   two corners on the .nav-corner helper divs that JS or HTML can inject,
+   OR we use the hero-corners wrapper approach below.
+
+   Instead — we wrap nav's inner content in a .hero-inner div (added in HTML),
+   and place all 4 corner brackets as absolute children of nav using
+   dedicated corner elements. For pure CSS (no HTML changes), we use the
+   approach of assigning corners to nav itself via 4 independent box shadows
+   drawn as inset borders:
+*/
+
+/* Pure-CSS 4-corner bracket solution using nav's own border painting */
+nav {
+    position: sticky; /* restate for clarity */
+    /* Draw all 4 corner L-brackets via box-shadow on a transparent outline */
+    box-shadow:
+        /* nav drop shadow */
+        0 2px 30px rgba(249, 224, 0, 0.2),
+        /* top-left cyan corner — top line */
+        inset  12px  0px 0px -10px var(--cyan),
+        inset  0px  12px 0px -10px var(--cyan),
+        /* top-right cyan corner */
+        inset -12px  0px 0px -10px var(--cyan),
+        inset  0px  12px 0px -10px var(--cyan),
+        /* bottom-left magenta corner */
+        inset  12px  0px 0px -10px var(--magenta),
+        inset  0px -12px 0px -10px var(--magenta),
+        /* bottom-right magenta corner */
+        inset -12px  0px 0px -10px var(--magenta),
+        inset  0px -12px 0px -10px var(--magenta);
+}
+
+/* ── Helper span corner brackets (top-right + bottom-left) ──
+   Add these two <span> elements inside <nav> in your HTML:
+     <span class="corner-tr"></span>
+     <span class="corner-bl"></span>
+   They handle the two corners that ::before / ::after can't cover.
+   ------------------------------------------------------------------ */
+.corner-tr {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 22px;
+    height: 22px;
+    border-top: 2px solid var(--cyan);
+    border-right: 2px solid var(--cyan);
+    pointer-events: none;
+}
+
+.corner-bl {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 22px;
+    height: 22px;
+    border-bottom: 2px solid var(--magenta);
+    border-left: 2px solid var(--magenta);
+    pointer-events: none;
+}
+
+/* Glitch wrapper: establishes stacking context */
+.glitch-wrapper {
+    position: relative;          /* stacking context for absolute layers */
+    display: inline-block;       /* shrink-wraps to title width */
+    text-align: center;
+    margin-bottom: 0.25rem;
+}
+
+/* Base title layer (layer 1 — sits in normal flow) */
+nav h1,
+.glitch-wrapper h1 {
+    position: relative;           /* layer 1 stays in flow */
+    font-size: 2.4rem;
     font-weight: 900;
     color: var(--yellow);
     text-shadow: var(--glow-yellow);
-    letter-spacing: 0.12em;
+    letter-spacing: 0.15em;
+    text-align: center;
+    animation: glitch 4s ease-in-out infinite;
+    /* Do NOT use margin here — centering is handled by the wrapper / nav flex */
 }
 
-/* Navigation links */
+/* Glitch layer 2 — magenta ghost, offset left */
+.glitch-wrapper::before {
+    content: attr(data-text);    /* JS should set data-text="🎮 GameVault" on wrapper */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--magenta);
+    opacity: 0;
+    animation: glitchLayerA 4s ease-in-out infinite;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Glitch layer 3 — cyan ghost, offset right */
+.glitch-wrapper::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    opacity: 0;
+    animation: glitchLayerB 4s ease-in-out infinite;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Subtitle / tagline beneath the title */
+.hero-subtitle {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 1.4rem;
+}
+
+/* ── Navigation links row ──
+   Sits directly beneath the hero title block, centered in a row.
+   -------------------------------------------------------------------------- */
 .nav-links {
     display: flex;
-    gap: 2rem;
+    flex-direction: row;          /* horizontal row */
+    justify-content: center;      /* centered */
+    align-items: center;
+    gap: 0;                       /* no gap — dividers used instead */
+    width: 100%;
+    border-top: 1px solid var(--panel-border);
+    margin-top: 0.2rem;
 }
 
 .nav-links a {
     font-family: var(--font-display);
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    padding: 0.3rem 0;
-    border-bottom: 2px solid transparent;
-    transition: color var(--transition-mid), border-color var(--transition-mid), text-shadow var(--transition-mid);
+    letter-spacing: 0.14em;
+    padding: 0.65rem 2rem;
+    border-bottom: 3px solid transparent;
+    border-right: 1px solid var(--panel-border);
+    transition: color var(--transition-mid), border-color var(--transition-mid),
+                background var(--transition-mid), text-shadow var(--transition-mid);
+}
+
+.nav-links a:last-child {
+    border-right: none;
 }
 
 .nav-links a:hover {
     color: var(--cyan);
     text-shadow: var(--glow-cyan);
     border-bottom-color: var(--cyan);
+    background: rgba(0, 240, 255, 0.05);
 }
 
 
@@ -378,7 +563,9 @@ input[type="hidden"] { display: none; }
 
 /* --------------------------------------------------------------------------
    10. BUTTONS
-   Primary, secondary (cancel), and danger variants.
+   Each action button has its own neon colour border.
+   On hover the button fills with that colour + glow.
+   Base style: transparent background, coloured border, coloured text.
    -------------------------------------------------------------------------- */
 button {
     font-family: var(--font-display);
@@ -387,78 +574,105 @@ button {
     text-transform: uppercase;
     letter-spacing: 0.12em;
     padding: 0.6rem 1.2rem;
-    border: none;
+    border: 2px solid transparent;        /* colour set per variant below */
     cursor: pointer;
-    transition: background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+    background: transparent;
     position: relative;
     overflow: hidden;
+    transition: background var(--transition-fast), box-shadow var(--transition-fast),
+                color var(--transition-fast), transform var(--transition-fast);
 }
 
-/* Shimmer effect on hover */
+/* Shimmer sweep on hover */
 button::after {
     content: '';
     position: absolute;
     top: 0; left: -75%;
     width: 50%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
     transform: skewX(-20deg);
     transition: left 0.4s ease;
 }
 
 button:hover::after { left: 130%; }
-button:active { transform: scale(0.97); }
+button:active        { transform: scale(0.97); }
 
-/* --- Primary (yellow) --- */
-button:not([id*="cancel"]):not([id*="delete"]):not([id*="remove"]) {
-    background: var(--yellow);
+/* ── Edit button — yellow #ffe600 ──
+   Used for any button whose id contains "save" or whose class is .btn-edit
+   ------------------------------------------------------------------ */
+button.btn-edit,
+button[id*="save"] {
+    color: #ffe600;
+    border-color: #ffe600;
+}
+
+button.btn-edit:hover,
+button[id*="save"]:hover {
+    background: #ffe600;
+    color: #0a0a0f;                        /* dark text on bright fill */
+    box-shadow: 0 0 10px #ffe600, 0 0 28px #ffe60066;
+}
+
+/* ── Delete / Remove button — pink #ff2d78 ──
+   ------------------------------------------------------------------ */
+button.btn-delete,
+button.btn-remove {
+    color: #ff2d78;
+    border-color: #ff2d78;
+}
+
+button.btn-delete:hover,
+button.btn-remove:hover {
+    background: #ff2d78;
+    color: #fff;
+    box-shadow: 0 0 10px #ff2d78, 0 0 28px #ff2d7866;
+}
+
+/* ── Wishlist / Add button — cyan #00f0ff ──
+   Covers: #btn-add-wishlist, .btn-add, #btn-submit-review, search Add buttons
+   ------------------------------------------------------------------ */
+button.btn-add,
+button#btn-add-wishlist,
+button#btn-submit-review,
+button[onclick*="searchGames"],
+.search-bar button {
+    color: #00f0ff;
+    border-color: #00f0ff;
+}
+
+button.btn-add:hover,
+button#btn-add-wishlist:hover,
+button#btn-submit-review:hover,
+button[onclick*="searchGames"]:hover,
+.search-bar button:hover {
+    background: #00f0ff;
     color: #0a0a0f;
+    box-shadow: 0 0 10px #00f0ff, 0 0 28px #00f0ff66;
 }
 
-button:not([id*="cancel"]):not([id*="delete"]):not([id*="remove"]):hover {
-    box-shadow: var(--glow-yellow);
-}
-
-/* --- Cancel (muted / ghost) --- */
+/* ── Cancel button — muted ghost ──
+   ------------------------------------------------------------------ */
 button[id*="cancel"] {
-    background: transparent;
     color: var(--text-muted);
-    border: 1px solid var(--panel-border);
+    border-color: var(--panel-border);
+    background: transparent;
 }
 
 button[id*="cancel"]:hover {
     color: var(--text-primary);
     border-color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: none;
 }
 
-/* --- Delete / Remove (danger magenta) --- */
-button.btn-delete,
-button.btn-remove {
-    background: var(--magenta);
-    color: #fff;
-}
-
-button.btn-delete:hover,
-button.btn-remove:hover {
-    box-shadow: var(--glow-magenta);
-}
-
-/* --- Edit (cyan outline) --- */
-button.btn-edit {
-    background: transparent;
-    color: var(--cyan);
-    border: 1px solid var(--cyan);
-}
-
-button.btn-edit:hover {
-    background: rgba(0, 240, 255, 0.1);
-    box-shadow: var(--glow-cyan);
-}
-
-/* --- Small action buttons (table rows) --- */
+/* ── Small action buttons (inside table rows) ──
+   Tighter padding for compact table cells.
+   ------------------------------------------------------------------ */
 button.btn-edit,
 button.btn-delete,
-button.btn-remove {
+button.btn-remove,
+button.btn-add {
     padding: 0.35rem 0.8rem;
     font-size: 0.65rem;
     margin: 0 0.2rem;
@@ -738,19 +952,41 @@ tbody tr.empty-row td {
     50%       { opacity: 0.4; width: 120px; }
 }
 
-/* Glitch text flicker — apply with class .glitch */
+/* ── Glitch base layer — yellow pulse on the h1 ── */
 @keyframes glitch {
-    0%   { text-shadow: var(--glow-yellow); }
-    20%  { text-shadow: 2px 0 var(--magenta), -2px 0 var(--cyan); }
-    40%  { text-shadow: var(--glow-yellow); }
-    60%  { text-shadow: -2px 0 var(--magenta), 2px 0 var(--cyan); }
-    80%  { text-shadow: var(--glow-yellow); }
-    100% { text-shadow: var(--glow-yellow); }
+    0%,  90%, 100% { text-shadow: var(--glow-yellow); transform: translate(0,0); }
+    91%            { text-shadow: -2px 0 var(--magenta), 2px 0 var(--cyan); transform: translate(-1px, 0); }
+    93%            { text-shadow:  2px 0 var(--cyan),   -2px 0 var(--magenta); transform: translate( 2px, 0); }
+    95%            { text-shadow: var(--glow-yellow); transform: translate(0,0); }
+    97%            { text-shadow: -3px 0 var(--magenta); transform: translate(-2px, 1px); }
+    99%            { text-shadow:  3px 0 var(--cyan);    transform: translate( 2px,-1px); }
 }
 
-/* Apply glitch to the main logo */
+/* ── Glitch layer A — magenta ghost, offset left ──
+   Flickers in briefly during glitch bursts                          */
+@keyframes glitchLayerA {
+    0%,  89%, 100% { opacity: 0; transform: translate(0, 0); }
+    91%            { opacity: 0.7; transform: translate(-3px, 1px) skewX(-2deg); clip-path: inset(10% 0 60% 0); }
+    93%            { opacity: 0.5; transform: translate(-2px,-1px) skewX( 1deg); clip-path: inset(55% 0 10% 0); }
+    95%            { opacity: 0; }
+    97%            { opacity: 0.6; transform: translate(-4px, 0);                clip-path: inset(30% 0 40% 0); }
+    99%            { opacity: 0; }
+}
+
+/* ── Glitch layer B — cyan ghost, offset right ──
+   Mirrors layer A with opposite offsets                             */
+@keyframes glitchLayerB {
+    0%,  89%, 100% { opacity: 0; transform: translate(0, 0); }
+    91%            { opacity: 0.7; transform: translate( 3px,-1px) skewX( 2deg); clip-path: inset(55% 0 10% 0); }
+    93%            { opacity: 0.5; transform: translate( 2px, 1px) skewX(-1deg); clip-path: inset(10% 0 60% 0); }
+    95%            { opacity: 0; }
+    97%            { opacity: 0.6; transform: translate( 4px, 0);                clip-path: inset(40% 0 30% 0); }
+    99%            { opacity: 0; }
+}
+
+/* Remove the duplicate glitch rule that was at the bottom of section 6 */
 nav h1 {
-    animation: glitch 4s ease-in-out infinite;
+    animation: glitch 6s ease-in-out infinite;
 }
 
 
@@ -760,13 +996,22 @@ nav h1 {
 @media (max-width: 768px) {
 
     nav {
-        flex-direction: column;
-        gap: 0.75rem;
-        padding: 1rem;
+        padding: 1.5rem 1rem 0;
     }
 
-    .nav-links {
-        gap: 1.2rem;
+    nav h1,
+    .glitch-wrapper h1 {
+        font-size: 1.6rem;
+    }
+
+    .glitch-wrapper::before,
+    .glitch-wrapper::after {
+        font-size: 1.6rem;
+    }
+
+    .nav-links a {
+        padding: 0.55rem 1rem;
+        font-size: 0.6rem;
     }
 
     .container {
@@ -802,7 +1047,11 @@ nav h1 {
 }
 
 @media (max-width: 480px) {
-    nav h1 { font-size: 1.1rem; }
+    nav h1,
+    .glitch-wrapper h1 { font-size: 1.2rem; }
+    .glitch-wrapper::before,
+    .glitch-wrapper::after { font-size: 1.2rem; }
     h2 { font-size: 1.1rem; }
     .search-bar { flex-direction: column; }
+    .nav-links a { padding: 0.5rem 0.7rem; letter-spacing: 0.08em; }
 }
