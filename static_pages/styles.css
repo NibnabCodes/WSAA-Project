@@ -3,37 +3,47 @@
    A neon-soaked, glitch-drenched stylesheet for the future of game tracking.
    ========================================================================== */
 
+
 /* --------------------------------------------------------------------------
    1. GOOGLE FONTS IMPORT
-   Orbitron: futuristic display font for headings
-   Share Tech Mono: monospaced techy font for body/UI text
+   Orbitron: futuristic display font for headings & buttons
+   Share Tech Mono: monospaced techy font for body / UI text
    -------------------------------------------------------------------------- */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&display=swap');
 
 
 /* --------------------------------------------------------------------------
    2. CSS CUSTOM PROPERTIES (Design Tokens)
-   All colours, shadows, and transitions defined here for consistency.
+   All colours, shadows, and transitions in one place for easy theming.
    -------------------------------------------------------------------------- */
 :root {
-    /* Core Palette */
-    --yellow:       #f9e000;   /* Cyberpunk primary yellow */
-    --cyan:         #00f0ff;   /* Neon cyan / electric blue */
-    --magenta:      #ff0090;   /* Hot-pink accent */
-    --dark-bg:      #0a0a0f;   /* Near-black page background */
-    --panel-bg:     #0f0f1a;   /* Card / panel background */
-    --panel-border: #1e1e33;   /* Subtle panel border */
-    --text-primary: #e8e8f0;   /* Main body text */
-    --text-muted:   #6a6a8a;   /* Placeholder / muted text */
+    /* Core palette */
+    --yellow:        #f9e000;
+    --cyan:          #00f0ff;
+    --magenta:       #ff0090;
+    --green:         #00ff88;
+    --dark-bg:       #0a0a0f;
+    --panel-bg:      #0f0f1a;
+    --panel-border:  #1e1e33;
+    --text-primary:  #e8e8f0;
+    --text-muted:    #6a6a8a;
+
+    /* Button-specific neon colours (exact values from spec) */
+    --btn-yellow:    #ffe600;
+    --btn-pink:      #ff2d78;
+    --btn-cyan:      #00f0ff;
+    --btn-green:     #00ff88;
 
     /* Glow shadows */
-    --glow-yellow:  0 0 8px #f9e000, 0 0 20px #f9e00066;
-    --glow-cyan:    0 0 8px #00f0ff, 0 0 20px #00f0ff66;
-    --glow-magenta: 0 0 8px #ff0090, 0 0 20px #ff009066;
+    --glow-yellow:   0 0 6px #ffe600, 0 0 18px #ffe60055;
+    --glow-pink:     0 0 6px #ff2d78, 0 0 18px #ff2d7855;
+    --glow-cyan:     0 0 6px #00f0ff, 0 0 18px #00f0ff55;
+    --glow-green:    0 0 6px #00ff88, 0 0 18px #00ff8855;
+    --glow-magenta:  0 0 8px #ff0090, 0 0 20px #ff009066;
 
     /* Typography */
-    --font-display: 'Orbitron', monospace;
-    --font-body:    'Share Tech Mono', monospace;
+    --font-display:  'Orbitron', monospace;
+    --font-body:     'Share Tech Mono', monospace;
 
     /* Transitions */
     --transition-fast: 0.15s ease;
@@ -43,7 +53,6 @@
 
 /* --------------------------------------------------------------------------
    3. RESET & BASE STYLES
-   Remove browser defaults and apply the cyberpunk canvas.
    -------------------------------------------------------------------------- */
 *, *::before, *::after {
     box-sizing: border-box;
@@ -51,9 +60,7 @@
     padding: 0;
 }
 
-html {
-    scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
     font-family: var(--font-body);
@@ -61,31 +68,25 @@ body {
     background-color: var(--dark-bg);
     color: var(--text-primary);
     line-height: 1.6;
-
-    /* Subtle scanline overlay for CRT feel */
-    background-image:
-        repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 2px,
-            rgba(0, 240, 255, 0.015) 2px,
-            rgba(0, 240, 255, 0.015) 4px
-        );
     min-height: 100vh;
+    /* CRT scanline overlay */
+    background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 240, 255, 0.015) 2px,
+        rgba(0, 240, 255, 0.015) 4px
+    );
 }
 
-/* Scrollbar Styling */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--dark-bg); }
-::-webkit-scrollbar-thumb {
-    background: var(--cyan);
-    box-shadow: var(--glow-cyan);
-}
+/* Custom scrollbar */
+::-webkit-scrollbar        { width: 6px; }
+::-webkit-scrollbar-track  { background: var(--dark-bg); }
+::-webkit-scrollbar-thumb  { background: var(--cyan); box-shadow: var(--glow-cyan); }
 
 
 /* --------------------------------------------------------------------------
    4. TYPOGRAPHY
-   Headings and text hierarchy.
    -------------------------------------------------------------------------- */
 h1, h2, h3 {
     font-family: var(--font-display);
@@ -98,13 +99,13 @@ h2 {
     font-weight: 700;
     color: var(--yellow);
     text-shadow: var(--glow-yellow);
-    margin-bottom: 1.2rem;
-    padding-bottom: 0.5rem;
+    margin-bottom: 1.4rem;
+    padding-bottom: 0.6rem;
     border-bottom: 1px solid var(--yellow);
     position: relative;
 }
 
-/* Animated underline accent on section headings */
+/* Animated cyan scan-line under each section heading */
 h2::after {
     content: '';
     position: absolute;
@@ -129,7 +130,6 @@ a {
     text-decoration: none;
     transition: color var(--transition-fast), text-shadow var(--transition-fast);
 }
-
 a:hover {
     color: var(--yellow);
     text-shadow: var(--glow-yellow);
@@ -137,13 +137,16 @@ a:hover {
 
 
 /* --------------------------------------------------------------------------
-   5. LAYOUT — CONTAINER
-   Centered max-width wrapper with side padding.
+   5. LAYOUT — PAGE CONTAINER
+   1200px max-width, centered with margin auto, consistent padding.
+   This is the single source of truth for desktop alignment — all sections,
+   tables and forms inherit their width from this wrapper.
    -------------------------------------------------------------------------- */
 .container {
     max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
-    padding: 2rem 1.5rem;
+    padding: 2.5rem 2rem;
     display: flex;
     flex-direction: column;
     gap: 3rem;
@@ -152,217 +155,147 @@ a:hover {
 
 /* --------------------------------------------------------------------------
    6. HERO / NAVIGATION BLOCK
-   Full-width hero section with centered glitch title, subtitle,
-   and nav links sitting directly beneath in a centered row.
-   The <nav> element serves as the hero wrapper (sticky at top).
+   Sticky top bar: centred glitch title -> nav links row directly beneath.
    -------------------------------------------------------------------------- */
 nav {
     position: sticky;
     top: 0;
     z-index: 100;
-    /* Stack hero content (title + subtitle + nav links) vertically, centered */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 0;
-    padding: 2.2rem 2rem 0;
+    padding: 2rem 2rem 0;
     background: rgba(10, 10, 15, 0.96);
     backdrop-filter: blur(12px);
     border-bottom: 2px solid var(--yellow);
     box-shadow: 0 2px 30px rgba(249, 224, 0, 0.2);
-
-    /* All-4-corner bracket decorations via outline pseudo-elements */
-    /* We use a single box-shadow trick on ::before/::after for the 4 corners */
 }
 
-/* ── Corner brackets: top-left & top-right ── */
+/* Corner bracket: top-left (cyan) */
 nav::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 22px;
-    height: 22px;
+    top: 0; left: 0;
+    width: 22px; height: 22px;
     border-top: 2px solid var(--cyan);
     border-left: 2px solid var(--cyan);
     pointer-events: none;
 }
 
-/* ── Corner brackets: bottom-left & bottom-right ── */
+/* Corner bracket: bottom-right (magenta) */
 nav::after {
     content: '';
     position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 22px;
-    height: 22px;
+    bottom: 0; right: 0;
+    width: 22px; height: 22px;
     border-bottom: 2px solid var(--magenta);
     border-right: 2px solid var(--magenta);
     pointer-events: none;
 }
 
-/* Extra corner brackets (top-right, bottom-left) via a wrapper span injected
-   with CSS — we use the .nav-corner-tr and .nav-corner-bl classes.
-   Because we can't add more pseudo-elements, we use box-shadow on nav
-   to fake the remaining two corners: */
-nav {
-    /* top-right corner (cyan) + bottom-left corner (magenta) */
-    box-shadow:
-        /* top-right */
-        calc(100% - 22px) 0px 0px 0px transparent,
-        /* bottom */
-        0 2px 30px rgba(249, 224, 0, 0.2);
-
-    outline: none;
-}
-
-/* 
-   Since CSS only allows 2 pseudo-elements per selector, we place the remaining
-   two corners on the .nav-corner helper divs that JS or HTML can inject,
-   OR we use the hero-corners wrapper approach below.
-
-   Instead — we wrap nav's inner content in a .hero-inner div (added in HTML),
-   and place all 4 corner brackets as absolute children of nav using
-   dedicated corner elements. For pure CSS (no HTML changes), we use the
-   approach of assigning corners to nav itself via 4 independent box shadows
-   drawn as inset borders:
-*/
-
-/* Pure-CSS 4-corner bracket solution using nav's own border painting */
-nav {
-    position: sticky; /* restate for clarity */
-    /* Draw all 4 corner L-brackets via box-shadow on a transparent outline */
-    box-shadow:
-        /* nav drop shadow */
-        0 2px 30px rgba(249, 224, 0, 0.2),
-        /* top-left cyan corner — top line */
-        inset  12px  0px 0px -10px var(--cyan),
-        inset  0px  12px 0px -10px var(--cyan),
-        /* top-right cyan corner */
-        inset -12px  0px 0px -10px var(--cyan),
-        inset  0px  12px 0px -10px var(--cyan),
-        /* bottom-left magenta corner */
-        inset  12px  0px 0px -10px var(--magenta),
-        inset  0px -12px 0px -10px var(--magenta),
-        /* bottom-right magenta corner */
-        inset -12px  0px 0px -10px var(--magenta),
-        inset  0px -12px 0px -10px var(--magenta);
-}
-
-/* ── Helper span corner brackets (top-right + bottom-left) ──
-   Add these two <span> elements inside <nav> in your HTML:
-     <span class="corner-tr"></span>
-     <span class="corner-bl"></span>
-   They handle the two corners that ::before / ::after can't cover.
-   ------------------------------------------------------------------ */
+/* Add these two spans inside <nav> in your HTML for the remaining corners:
+   <span class="corner-tr"></span>
+   <span class="corner-bl"></span>                                    */
 .corner-tr {
     position: absolute;
-    top: 0;
-    right: 0;
-    width: 22px;
-    height: 22px;
+    top: 0; right: 0;
+    width: 22px; height: 22px;
     border-top: 2px solid var(--cyan);
     border-right: 2px solid var(--cyan);
     pointer-events: none;
 }
-
 .corner-bl {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 22px;
-    height: 22px;
+    bottom: 0; left: 0;
+    width: 22px; height: 22px;
     border-bottom: 2px solid var(--magenta);
     border-left: 2px solid var(--magenta);
     pointer-events: none;
 }
 
-/* Glitch wrapper: establishes stacking context */
+/* ── Glitch title wrapper ──
+   Wrap <h1> in: <div class="glitch-wrapper" data-text="🎮 GameVault">
+   position:relative on wrapper + position:absolute on both pseudo-layers
+   means all 3 layers share the exact same top-left origin — perfectly stacked. */
 .glitch-wrapper {
-    position: relative;          /* stacking context for absolute layers */
-    display: inline-block;       /* shrink-wraps to title width */
+    position: relative;
+    display: inline-block;
     text-align: center;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.3rem;
 }
 
-/* Base title layer (layer 1 — sits in normal flow) */
+/* Layer 1 — base yellow title (in normal flow, sets the box height) */
 nav h1,
 .glitch-wrapper h1 {
-    position: relative;           /* layer 1 stays in flow */
-    font-size: 2.4rem;
+    position: relative;
+    font-size: 2.2rem;
     font-weight: 900;
     color: var(--yellow);
     text-shadow: var(--glow-yellow);
     letter-spacing: 0.15em;
     text-align: center;
-    animation: glitch 4s ease-in-out infinite;
-    /* Do NOT use margin here — centering is handled by the wrapper / nav flex */
+    animation: glitch 6s ease-in-out infinite;
 }
 
-/* Glitch layer 2 — magenta ghost, offset left */
+/* Layer 2 — magenta ghost, absolutely stacked on Layer 1 */
 .glitch-wrapper::before {
-    content: attr(data-text);    /* JS should set data-text="🎮 GameVault" on wrapper */
+    content: attr(data-text);
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     width: 100%;
     text-align: center;
     font-family: var(--font-display);
-    font-size: 2.4rem;
+    font-size: 2.2rem;
     font-weight: 900;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--magenta);
     opacity: 0;
-    animation: glitchLayerA 4s ease-in-out infinite;
+    animation: glitchLayerA 6s ease-in-out infinite;
     pointer-events: none;
     user-select: none;
 }
 
-/* Glitch layer 3 — cyan ghost, offset right */
+/* Layer 3 — cyan ghost, absolutely stacked on Layer 1 */
 .glitch-wrapper::after {
     content: attr(data-text);
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     width: 100%;
     text-align: center;
     font-family: var(--font-display);
-    font-size: 2.4rem;
+    font-size: 2.2rem;
     font-weight: 900;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--cyan);
     opacity: 0;
-    animation: glitchLayerB 4s ease-in-out infinite;
+    animation: glitchLayerB 6s ease-in-out infinite;
     pointer-events: none;
     user-select: none;
 }
 
-/* Subtitle / tagline beneath the title */
+/* Hero subtitle */
 .hero-subtitle {
     font-family: var(--font-body);
-    font-size: 0.75rem;
-    letter-spacing: 0.25em;
+    font-size: 0.72rem;
+    letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--text-muted);
     text-align: center;
     margin-bottom: 1.4rem;
 }
 
-/* ── Navigation links row ──
-   Sits directly beneath the hero title block, centered in a row.
-   -------------------------------------------------------------------------- */
+/* Nav links row — centred, directly beneath the title */
 .nav-links {
     display: flex;
-    flex-direction: row;          /* horizontal row */
-    justify-content: center;      /* centered */
+    flex-direction: row;
+    justify-content: center;
     align-items: center;
-    gap: 0;                       /* no gap — dividers used instead */
     width: 100%;
     border-top: 1px solid var(--panel-border);
-    margin-top: 0.2rem;
 }
 
 .nav-links a {
@@ -372,16 +305,13 @@ nav h1,
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    padding: 0.65rem 2rem;
+    padding: 0.7rem 2.5rem;
     border-bottom: 3px solid transparent;
     border-right: 1px solid var(--panel-border);
     transition: color var(--transition-mid), border-color var(--transition-mid),
                 background var(--transition-mid), text-shadow var(--transition-mid);
 }
-
-.nav-links a:last-child {
-    border-right: none;
-}
+.nav-links a:last-child { border-right: none; }
 
 .nav-links a:hover {
     color: var(--cyan);
@@ -393,61 +323,57 @@ nav h1,
 
 /* --------------------------------------------------------------------------
    7. SECTIONS
-   Each page section (search, games, reviews, wishlist) styled as a panel.
+   Full-width inside .container with two corner-bracket decorations.
+   overflow: visible is critical — never clips button rows in table cells.
    -------------------------------------------------------------------------- */
 section {
+    width: 100%;
     background: var(--panel-bg);
     border: 1px solid var(--panel-border);
     border-left: 3px solid var(--cyan);
     padding: 2rem;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     animation: fadeInUp 0.5s ease both;
 }
 
-/* Corner bracket decoration — top-left */
+/* Top-right yellow corner bracket */
 section::before {
     content: '';
     position: absolute;
-    top: 0;
-    right: 0;
-    width: 30px;
-    height: 30px;
+    top: 0; right: 0;
+    width: 28px; height: 28px;
     border-top: 2px solid var(--yellow);
     border-right: 2px solid var(--yellow);
+    pointer-events: none;
 }
 
-/* Corner bracket decoration — bottom-right */
+/* Bottom-left magenta corner bracket */
 section::after {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 30px;
-    height: 30px;
+    bottom: 0; left: 0;
+    width: 28px; height: 28px;
     border-bottom: 2px solid var(--magenta);
     border-left: 2px solid var(--magenta);
+    pointer-events: none;
 }
+
+/* Search section uses yellow left accent */
+#search-section { border-left-color: var(--yellow); }
 
 
 /* --------------------------------------------------------------------------
    8. SEARCH BAR
    -------------------------------------------------------------------------- */
-#search-section {
-    border-left-color: var(--yellow);
-}
-
 .search-bar {
     display: flex;
     gap: 0.75rem;
     margin-bottom: 1.5rem;
+    align-items: stretch;
 }
+.search-bar input { flex: 1; }
 
-.search-bar input {
-    flex: 1;
-}
-
-/* Search results container */
 #search-results {
     display: flex;
     flex-wrap: wrap;
@@ -455,8 +381,7 @@ section::after {
     margin-top: 1rem;
 }
 
-/* Individual search result cards */
-#search-results .search-card {
+.search-card {
     background: rgba(0, 240, 255, 0.04);
     border: 1px solid var(--cyan);
     padding: 0.75rem 1rem;
@@ -464,45 +389,36 @@ section::after {
     align-items: center;
     gap: 1rem;
     cursor: pointer;
-    transition: background var(--transition-fast), box-shadow var(--transition-fast);
-    min-width: 220px;
+    min-width: 200px;
     flex: 1;
+    transition: background var(--transition-fast), box-shadow var(--transition-fast);
 }
-
-#search-results .search-card:hover {
+.search-card:hover {
     background: rgba(0, 240, 255, 0.1);
     box-shadow: var(--glow-cyan);
 }
-
-#search-results .search-card img {
-    width: 50px;
-    height: 50px;
+.search-card img {
+    width: 50px; height: 50px;
     object-fit: cover;
     border: 1px solid var(--panel-border);
+    flex-shrink: 0;
 }
-
-#search-results .search-card-info span {
+.search-card-info strong {
     display: block;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-}
-
-#search-results .search-card-info strong {
     color: var(--text-primary);
     font-family: var(--font-display);
     font-size: 0.8rem;
 }
-
-/* "Add" button inside search result card */
-#search-results .btn-add {
-    margin-left: auto;
-    flex-shrink: 0;
+.search-card-info span {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
 }
+.search-card .btn-add { margin-left: auto; flex-shrink: 0; }
 
 
 /* --------------------------------------------------------------------------
    9. FORM INPUTS & SELECTS
-   All interactive form controls share a unified neon style.
    -------------------------------------------------------------------------- */
 input[type="text"],
 input[type="date"],
@@ -518,7 +434,9 @@ select {
     font-family: var(--font-body);
     font-size: 0.9rem;
     outline: none;
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+    transition: border-color var(--transition-fast),
+                box-shadow var(--transition-fast),
+                background var(--transition-fast);
     appearance: none;
     -webkit-appearance: none;
 }
@@ -528,22 +446,17 @@ input[type="date"]:focus,
 input[type="url"]:focus,
 textarea:focus,
 select:focus {
-    border-color: var(--yellow);
-    box-shadow: 0 2px 12px rgba(249, 224, 0, 0.2);
-    background: rgba(249, 224, 0, 0.04);
+    border-color: var(--btn-yellow);
+    box-shadow: 0 2px 12px rgba(255, 230, 0, 0.2);
+    background: rgba(255, 230, 0, 0.04);
 }
 
 input::placeholder,
-textarea::placeholder {
-    color: var(--text-muted);
-}
+textarea::placeholder { color: var(--text-muted); }
+textarea { resize: vertical; min-height: 90px; }
+input[type="hidden"] { display: none; }
 
-textarea {
-    resize: vertical;
-    min-height: 90px;
-}
-
-/* Custom select arrow */
+/* Custom dropdown arrow */
 select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2300f0ff' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -551,137 +464,144 @@ select {
     padding-right: 2.2rem;
     cursor: pointer;
 }
-
-select option {
-    background: var(--panel-bg);
-    color: var(--text-primary);
-}
-
-/* Hidden input type (used for IDs) */
-input[type="hidden"] { display: none; }
+select option { background: var(--panel-bg); color: var(--text-primary); }
 
 
 /* --------------------------------------------------------------------------
-   10. BUTTONS
-   Each action button has its own neon colour border.
-   On hover the button fills with that colour + glow.
-   Base style: transparent background, coloured border, coloured text.
+   10. BUTTONS — Complete Neon Spec
+   ─────────────────────────────────────────────────────────────────────────
+   EVERY button:
+     • Transparent background
+     • 1.5px glowing neon outline (colour per variant below)
+     • White #ffffff text
+     • Hover: border glows brighter + fill at ~18% opacity
+
+   Colour assignments:
+     Edit buttons           → yellow  #ffe600
+     Delete / Remove        → pink    #ff2d78
+     Cancel                 → pink    #ff2d78
+     Save to Collection     → green   #00ff88
+     Add to Wishlist        → cyan    #00f0ff
+     Reviews (nav to section) → cyan  #00f0ff
+     Search button          → cyan    #00f0ff
+     Submit Review          → yellow  #ffe600
+     Save Changes           → yellow  #ffe600
    -------------------------------------------------------------------------- */
+
+/* ── Base — shared by every button ── */
 button {
     font-family: var(--font-display);
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
-    padding: 0.6rem 1.2rem;
-    border: 2px solid transparent;        /* colour set per variant below */
-    cursor: pointer;
+    letter-spacing: 0.1em;
+    color: #ffffff;
     background: transparent;
+    border: 1.5px solid currentColor;
+    padding: 0.55rem 1rem;
+    cursor: pointer;
     position: relative;
     overflow: hidden;
-    transition: background var(--transition-fast), box-shadow var(--transition-fast),
-                color var(--transition-fast), transform var(--transition-fast);
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition:
+        background   var(--transition-fast),
+        box-shadow   var(--transition-fast),
+        transform    var(--transition-fast);
 }
 
 /* Shimmer sweep on hover */
 button::after {
     content: '';
     position: absolute;
-    top: 0; left: -75%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+    top: 0; left: -80%;
+    width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
     transform: skewX(-20deg);
     transition: left 0.4s ease;
+    pointer-events: none;
 }
+button:hover::after { left: 140%; }
+button:active       { transform: scale(0.97); }
 
-button:hover::after { left: 130%; }
-button:active        { transform: scale(0.97); }
-
-/* ── Edit button — yellow #ffe600 ──
-   Used for any button whose id contains "save" or whose class is .btn-edit
-   ------------------------------------------------------------------ */
+/* ── YELLOW — Edit, Submit Review, Save Changes ── */
 button.btn-edit,
-button[id*="save"] {
-    color: #ffe600;
-    border-color: #ffe600;
+button#btn-save-game-edit,
+button#btn-save-review-edit,
+button#btn-save-wishlist-edit,
+button#btn-submit-review {
+    border-color: var(--btn-yellow);
+    text-shadow:  0 0 6px var(--btn-yellow);
+    box-shadow:   0 0 4px var(--btn-yellow);
 }
-
 button.btn-edit:hover,
-button[id*="save"]:hover {
-    background: #ffe600;
-    color: #0a0a0f;                        /* dark text on bright fill */
-    box-shadow: 0 0 10px #ffe600, 0 0 28px #ffe60066;
+button#btn-save-game-edit:hover,
+button#btn-save-review-edit:hover,
+button#btn-save-wishlist-edit:hover,
+button#btn-submit-review:hover {
+    background: rgba(255, 230, 0, 0.18);
+    box-shadow: var(--glow-yellow);
 }
 
-/* ── Delete / Remove button — pink #ff2d78 ──
-   ------------------------------------------------------------------ */
+/* ── PINK — Delete, Remove, Cancel ── */
 button.btn-delete,
-button.btn-remove {
-    color: #ff2d78;
-    border-color: #ff2d78;
+button.btn-remove,
+button[id*="cancel"] {
+    border-color: var(--btn-pink);
+    text-shadow:  0 0 6px var(--btn-pink);
+    box-shadow:   0 0 4px var(--btn-pink);
 }
-
 button.btn-delete:hover,
-button.btn-remove:hover {
-    background: #ff2d78;
-    color: #fff;
-    box-shadow: 0 0 10px #ff2d78, 0 0 28px #ff2d7866;
+button.btn-remove:hover,
+button[id*="cancel"]:hover {
+    background: rgba(255, 45, 120, 0.18);
+    box-shadow: var(--glow-pink);
 }
 
-/* ── Wishlist / Add button — cyan #00f0ff ──
-   Covers: #btn-add-wishlist, .btn-add, #btn-submit-review, search Add buttons
-   ------------------------------------------------------------------ */
+/* ── CYAN — Add to Wishlist, Add (search card), Reviews, Search ── */
 button.btn-add,
 button#btn-add-wishlist,
-button#btn-submit-review,
-button[onclick*="searchGames"],
-.search-bar button {
-    color: #00f0ff;
-    border-color: #00f0ff;
+button.btn-reviews,
+.search-bar button,
+button[onclick*="searchGames"] {
+    border-color: var(--btn-cyan);
+    text-shadow:  0 0 6px var(--btn-cyan);
+    box-shadow:   0 0 4px var(--btn-cyan);
 }
-
 button.btn-add:hover,
 button#btn-add-wishlist:hover,
-button#btn-submit-review:hover,
-button[onclick*="searchGames"]:hover,
-.search-bar button:hover {
-    background: #00f0ff;
-    color: #0a0a0f;
-    box-shadow: 0 0 10px #00f0ff, 0 0 28px #00f0ff66;
+button.btn-reviews:hover,
+.search-bar button:hover,
+button[onclick*="searchGames"]:hover {
+    background: rgba(0, 240, 255, 0.18);
+    box-shadow: var(--glow-cyan);
 }
 
-/* ── Cancel button — muted ghost ──
-   ------------------------------------------------------------------ */
-button[id*="cancel"] {
-    color: var(--text-muted);
-    border-color: var(--panel-border);
-    background: transparent;
+/* ── GREEN — Save to Collection ── */
+button.btn-save-collection {
+    border-color: var(--btn-green);
+    text-shadow:  0 0 6px var(--btn-green);
+    box-shadow:   0 0 4px var(--btn-green);
+}
+button.btn-save-collection:hover {
+    background: rgba(0, 255, 136, 0.18);
+    box-shadow: var(--glow-green);
 }
 
-button[id*="cancel"]:hover {
-    color: var(--text-primary);
-    border-color: var(--text-muted);
-    background: rgba(255, 255, 255, 0.04);
-    box-shadow: none;
-}
-
-/* ── Small action buttons (inside table rows) ──
-   Tighter padding for compact table cells.
-   ------------------------------------------------------------------ */
+/* ── Small inline table-row buttons (tighter padding) ── */
 button.btn-edit,
 button.btn-delete,
 button.btn-remove,
-button.btn-add {
-    padding: 0.35rem 0.8rem;
-    font-size: 0.65rem;
-    margin: 0 0.2rem;
+button.btn-add,
+button.btn-reviews {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.62rem;
 }
 
 
 /* --------------------------------------------------------------------------
    11. EDIT / ADD FORMS (inline panels)
-   Forms for editing games, reviews, and wishlist entries.
+   Two-column grid on desktop; collapses to single column on mobile.
    -------------------------------------------------------------------------- */
 #edit-game-form,
 #edit-review-form,
@@ -697,20 +617,21 @@ button.btn-add {
     grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
     align-items: end;
+    width: 100%;
     animation: fadeInUp 0.25s ease both;
 }
 
-/* Form headings span full width */
+/* Headings always span full width */
 #edit-game-form h3,
 #edit-review-form h3,
 #edit-wishlist-form h3,
 #add-review-form h3,
 #add-wishlist-form h3 {
     grid-column: 1 / -1;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.1rem;
 }
 
-/* Textarea and select span full width in forms */
+/* Textareas and selects span full width */
 #edit-game-form textarea,
 #add-review-form textarea,
 #edit-review-form textarea,
@@ -722,29 +643,27 @@ button.btn-add {
     grid-column: 1 / -1;
 }
 
-/* Button row at the bottom */
-#edit-game-form button,
-#edit-review-form button,
-#edit-wishlist-form button {
-    align-self: end;
-}
-
-/* Full-width submit buttons in add forms */
+/* Primary submit / add buttons span full width */
 #btn-submit-review,
-#btn-add-wishlist {
-    grid-column: 1 / -1;
-}
+#btn-add-wishlist { grid-column: 1 / -1; }
+
+/* Save + Cancel buttons sit side by side in edit forms */
+#edit-game-form   button,
+#edit-review-form button,
+#edit-wishlist-form button { align-self: end; }
 
 
 /* --------------------------------------------------------------------------
    12. DATA TABLES
-   Neon-bordered tables for games, reviews, and wishlist data.
+   Full-width inside their section. The Actions column uses a flex wrapper
+   so ALL buttons are always visible and never overlap each other.
    -------------------------------------------------------------------------- */
 table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.85rem;
     margin-top: 0.5rem;
+    table-layout: auto;
 }
 
 thead {
@@ -754,7 +673,7 @@ thead {
 
 thead th {
     font-family: var(--font-display);
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.12em;
@@ -762,16 +681,14 @@ thead th {
     text-shadow: var(--glow-yellow);
     padding: 0.75rem 1rem;
     text-align: left;
+    white-space: nowrap;
 }
 
 tbody tr {
     border-bottom: 1px solid var(--panel-border);
     transition: background var(--transition-fast);
 }
-
-tbody tr:hover {
-    background: rgba(0, 240, 255, 0.04);
-}
+tbody tr:hover { background: rgba(0, 240, 255, 0.04); }
 
 tbody td {
     padding: 0.75rem 1rem;
@@ -779,16 +696,31 @@ tbody td {
     vertical-align: middle;
 }
 
-/* Game thumbnail images in table */
+/* ── Actions cell — flex row that wraps so buttons never overlap ──
+   flex-wrap: wrap  = buttons stack to next line rather than hide
+   gap              = consistent spacing between all buttons
+   min-width        = cell is wide enough to show all buttons inline
+   on desktop, narrowing only on very small screens                  */
+tbody td:last-child {
+    min-width: 180px;
+}
+
+.table-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+}
+
+/* Game thumbnail */
 tbody td img {
-    width: 48px;
-    height: 48px;
+    width: 48px; height: 48px;
     object-fit: cover;
     border: 1px solid var(--panel-border);
     display: block;
 }
 
-/* Empty state rows */
+/* Empty state row */
 tbody tr.empty-row td {
     text-align: center;
     color: var(--text-muted);
@@ -798,8 +730,7 @@ tbody tr.empty-row td {
 
 
 /* --------------------------------------------------------------------------
-   13. RECOMMENDED BADGE
-   Used in the Reviews table to show thumbs up/down.
+   13. RECOMMENDED BADGE (Reviews table)
    -------------------------------------------------------------------------- */
 .badge {
     display: inline-block;
@@ -810,43 +741,41 @@ tbody tr.empty-row td {
     padding: 0.25rem 0.6rem;
     text-transform: uppercase;
 }
-
 .badge-recommended {
     background: rgba(0, 240, 255, 0.1);
     border: 1px solid var(--cyan);
     color: var(--cyan);
     text-shadow: var(--glow-cyan);
 }
-
 .badge-not-recommended {
-    background: rgba(255, 0, 144, 0.1);
-    border: 1px solid var(--magenta);
-    color: var(--magenta);
-    text-shadow: var(--glow-magenta);
+    background: rgba(255, 45, 120, 0.1);
+    border: 1px solid var(--btn-pink);
+    color: var(--btn-pink);
+    text-shadow: var(--glow-pink);
 }
 
 
 /* --------------------------------------------------------------------------
-   14. PRIORITY BADGE
-   Used in the Wishlist table.
+   14. PRIORITY BADGE (Wishlist table)
    -------------------------------------------------------------------------- */
-.priority-high   { color: var(--magenta); text-shadow: var(--glow-magenta); font-weight: bold; }
-.priority-medium { color: var(--yellow);  text-shadow: var(--glow-yellow);  font-weight: bold; }
+.priority-high   { color: var(--magenta);    text-shadow: var(--glow-magenta); font-weight: bold; }
+.priority-medium { color: var(--btn-yellow); text-shadow: var(--glow-yellow);  font-weight: bold; }
 .priority-low    { color: var(--text-muted); }
 
 
 /* --------------------------------------------------------------------------
-   15. LOADING SPINNER
-   Full-page overlay with a rotating neon ring.
+   15. LOADING SPINNER (full-page overlay)
    -------------------------------------------------------------------------- */
 #loading {
     position: fixed;
     inset: 0;
-    background: rgba(10, 10, 15, 0.85);
+    background: rgba(10, 10, 15, 0.88);
     backdrop-filter: blur(4px);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 1.5rem;
     z-index: 9999;
     font-family: var(--font-display);
     font-size: 0.75rem;
@@ -854,32 +783,26 @@ tbody tr.empty-row td {
     color: var(--cyan);
     text-shadow: var(--glow-cyan);
     text-transform: uppercase;
-    flex-direction: column;
-    gap: 1.5rem;
 }
 
-/* Spinner ring */
+/* Dual-colour spinning ring */
 #loading::before {
     content: '';
-    width: 56px;
-    height: 56px;
+    width: 56px; height: 56px;
     border: 3px solid rgba(0, 240, 255, 0.15);
     border-top-color: var(--cyan);
-    border-right-color: var(--yellow);
+    border-right-color: var(--btn-yellow);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
 }
 
-/* "hidden" utility class — shared by #loading and #toast */
-.hidden {
-    display: none !important;
-}
+/* Shared utility — hides both #loading and #toast */
+.hidden { display: none !important; }
 
 
 /* --------------------------------------------------------------------------
    16. TOAST NOTIFICATION
-   Slides in from the top-right with a neon border.
    -------------------------------------------------------------------------- */
 #toast {
     position: fixed;
@@ -898,15 +821,11 @@ tbody tr.empty-row td {
     box-shadow: var(--glow-cyan), 0 8px 32px rgba(0,0,0,0.6);
     animation: toastIn 0.3s ease both;
 }
-
-/* Error variant — swap cyan for magenta */
 #toast.toast-error {
-    border-color: var(--magenta);
-    border-left-color: var(--magenta);
-    box-shadow: var(--glow-magenta), 0 8px 32px rgba(0,0,0,0.6);
+    border-color: var(--btn-pink);
+    border-left-color: var(--btn-pink);
+    box-shadow: var(--glow-pink), 0 8px 32px rgba(0,0,0,0.6);
 }
-
-/* Success variant */
 #toast.toast-success {
     border-color: var(--cyan);
     border-left-color: var(--cyan);
@@ -917,53 +836,36 @@ tbody tr.empty-row td {
    17. KEYFRAME ANIMATIONS
    -------------------------------------------------------------------------- */
 
-/* Spinner rotation */
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
 
-/* Section / form fade-in from below */
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(16px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Toast slide in from right */
 @keyframes toastIn {
-    from {
-        opacity: 0;
-        transform: translateX(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+    from { opacity: 0; transform: translateX(30px); }
+    to   { opacity: 1; transform: translateX(0); }
 }
 
-/* Pulsing underline scan on headings */
 @keyframes scanPulse {
     0%, 100% { opacity: 1; width: 60px; }
     50%       { opacity: 0.4; width: 120px; }
 }
 
-/* ── Glitch base layer — yellow pulse on the h1 ── */
+/* Base glitch — yellow title layer */
 @keyframes glitch {
-    0%,  90%, 100% { text-shadow: var(--glow-yellow); transform: translate(0,0); }
+    0%,  89%, 100% { text-shadow: var(--glow-yellow); transform: translate(0, 0); }
     91%            { text-shadow: -2px 0 var(--magenta), 2px 0 var(--cyan); transform: translate(-1px, 0); }
-    93%            { text-shadow:  2px 0 var(--cyan),   -2px 0 var(--magenta); transform: translate( 2px, 0); }
-    95%            { text-shadow: var(--glow-yellow); transform: translate(0,0); }
+    93%            { text-shadow:  2px 0 var(--cyan),  -2px 0 var(--magenta); transform: translate(2px, 0); }
+    95%            { text-shadow: var(--glow-yellow); transform: translate(0, 0); }
     97%            { text-shadow: -3px 0 var(--magenta); transform: translate(-2px, 1px); }
     99%            { text-shadow:  3px 0 var(--cyan);    transform: translate( 2px,-1px); }
 }
 
-/* ── Glitch layer A — magenta ghost, offset left ──
-   Flickers in briefly during glitch bursts                          */
+/* Glitch layer A — magenta ghost, clips top then bottom slice */
 @keyframes glitchLayerA {
     0%,  89%, 100% { opacity: 0; transform: translate(0, 0); }
     91%            { opacity: 0.7; transform: translate(-3px, 1px) skewX(-2deg); clip-path: inset(10% 0 60% 0); }
@@ -973,8 +875,7 @@ tbody tr.empty-row td {
     99%            { opacity: 0; }
 }
 
-/* ── Glitch layer B — cyan ghost, offset right ──
-   Mirrors layer A with opposite offsets                             */
+/* Glitch layer B — cyan ghost, opposite offsets and clips */
 @keyframes glitchLayerB {
     0%,  89%, 100% { opacity: 0; transform: translate(0, 0); }
     91%            { opacity: 0.7; transform: translate( 3px,-1px) skewX( 2deg); clip-path: inset(55% 0 10% 0); }
@@ -984,46 +885,23 @@ tbody tr.empty-row td {
     99%            { opacity: 0; }
 }
 
-/* Remove the duplicate glitch rule that was at the bottom of section 6 */
-nav h1 {
-    animation: glitch 6s ease-in-out infinite;
-}
+/* Bind glitch animation to the h1 inside nav */
+nav h1 { animation: glitch 6s ease-in-out infinite; }
 
 
 /* --------------------------------------------------------------------------
-   18. RESPONSIVE — TABLET & MOBILE
+   18. RESPONSIVE — TABLET  (≤ 900px)
    -------------------------------------------------------------------------- */
-@media (max-width: 768px) {
-
-    nav {
-        padding: 1.5rem 1rem 0;
-    }
-
-    nav h1,
-    .glitch-wrapper h1 {
-        font-size: 1.6rem;
-    }
-
-    .glitch-wrapper::before,
-    .glitch-wrapper::after {
-        font-size: 1.6rem;
-    }
-
-    .nav-links a {
-        padding: 0.55rem 1rem;
-        font-size: 0.6rem;
-    }
+@media (max-width: 900px) {
 
     .container {
-        padding: 1.5rem 1rem;
-        gap: 2rem;
+        padding: 2rem 1.5rem;
+        gap: 2.5rem;
     }
 
-    section {
-        padding: 1.25rem;
-    }
+    section { padding: 1.5rem; }
 
-    /* Stack form grids to single column on mobile */
+    /* Collapse forms to single column */
     #edit-game-form,
     #edit-review-form,
     #edit-wishlist-form,
@@ -1032,26 +910,76 @@ nav h1 {
         grid-template-columns: 1fr;
     }
 
-    /* Make tables horizontally scrollable on small screens */
+    /* Restore full-width on selects and primary buttons */
+    #edit-game-form select,
+    #add-review-form select,
+    #edit-review-form select,
+    #add-wishlist-form select,
+    #edit-wishlist-form select,
+    #btn-submit-review,
+    #btn-add-wishlist {
+        grid-column: 1 / -1;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   19. RESPONSIVE — MOBILE  (≤ 640px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+
+    nav { padding: 1.5rem 1rem 0; }
+
+    nav h1,
+    .glitch-wrapper h1       { font-size: 1.5rem; }
+    .glitch-wrapper::before,
+    .glitch-wrapper::after   { font-size: 1.5rem; }
+
+    .nav-links a {
+        padding: 0.55rem 1.2rem;
+        font-size: 0.6rem;
+    }
+
+    .container {
+        padding: 1.25rem 1rem;
+        gap: 2rem;
+    }
+
+    section { padding: 1.1rem; }
+
+    h2 { font-size: 1.1rem; }
+
+    .search-bar { flex-direction: column; }
+
+    /* Tables scroll horizontally */
     table {
         display: block;
         overflow-x: auto;
         white-space: nowrap;
     }
 
-    #toast {
-        right: 1rem;
-        left: 1rem;
-        min-width: unset;
-    }
+    /* Actions buttons can wrap to next line on narrow screens */
+    .table-actions { flex-wrap: wrap; gap: 0.3rem; }
+
+    #toast { right: 1rem; left: 1rem; min-width: unset; }
 }
 
-@media (max-width: 480px) {
+
+/* --------------------------------------------------------------------------
+   20. RESPONSIVE — SMALL MOBILE  (≤ 400px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 400px) {
+
     nav h1,
-    .glitch-wrapper h1 { font-size: 1.2rem; }
+    .glitch-wrapper h1       { font-size: 1.1rem; }
     .glitch-wrapper::before,
-    .glitch-wrapper::after { font-size: 1.2rem; }
-    h2 { font-size: 1.1rem; }
-    .search-bar { flex-direction: column; }
-    .nav-links a { padding: 0.5rem 0.7rem; letter-spacing: 0.08em; }
+    .glitch-wrapper::after   { font-size: 1.1rem; }
+
+    .nav-links a {
+        padding: 0.5rem 0.7rem;
+        letter-spacing: 0.07em;
+        font-size: 0.55rem;
+    }
+
+    button { font-size: 0.58rem; padding: 0.4rem 0.7rem; }
 }
