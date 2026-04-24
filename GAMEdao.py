@@ -1,5 +1,4 @@
 import mysql.connector
-from sqlalchemy import values
 import config as cfg
  
 class GameDAO:
