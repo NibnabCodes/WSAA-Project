@@ -144,7 +144,17 @@ class GameDAO:
     def getAllReviews(self):
         connection, cursor = self.getcursor()
 
-        cursor.execute("SELECT * FROM reviews")
+        sql = """
+            SELECT reviews.id,
+                games.title,
+                reviews.recommended,
+                reviews.comment,
+                reviews.date_added
+            FROM reviews
+            JOIN games ON reviews.game_id = games.id
+        """
+
+        cursor.execute(sql)
         results = cursor.fetchall()
 
         returnArray = []
@@ -160,7 +170,17 @@ class GameDAO:
     def getReviewByID(self, game_id):
         connection, cursor = self.getcursor()
 
-        sql = "SELECT * FROM reviews WHERE game_id = %s"
+        sql = """
+            SELECT reviews.id,
+                games.title,
+                reviews.recommended,
+                reviews.comment,
+                reviews.date_added
+            FROM reviews
+            JOIN games ON reviews.game_id = games.id
+            WHERE reviews.game_id = %s
+        """
+
         values = (game_id,)
 
         cursor.execute(sql, values)
@@ -238,7 +258,7 @@ class GameDAO:
  
 # Convert SQL result to dictionary
     def convertToReviewDictionary(self, resultLine):
-        attkeys = ["id", "game_id", "recommended", "comment", "date_added"]
+        attkeys = ["id", "title", "recommended", "comment", "date_added"]
         review = {}
         currentkey = 0
         for attrib in resultLine:
