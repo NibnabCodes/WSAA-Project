@@ -1,3 +1,5 @@
+## Author: Niamh Hogan
+
 ## References for `GAMEdao.py`
 
 The code within this file was adapted from lab material developed by Andrew Beatty for the Web Services & Applications module:
@@ -24,7 +26,11 @@ The following sources were used for the RAWG search endpoint implementation:
 
 # Static Page References
 
-## References for `index.html`
+## References for `index.html`  
+
+The code in this file was adapted from lab material developed by Andrew Beatty for the Web Services & Applications module:  
+
+- https://github.com/andrewbeattycourseware/wsaa-courseware/blob/main/code/Topic08-generated-client/staticpages/index.html
 
 ### HTML Structure & Elements
 

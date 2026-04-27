@@ -36,7 +36,7 @@ The application performs full **CRUD (Create, Read, Update, Delete)** operations
 | Backend | Python & Flask |
 | Database | MySQL |
 | Frontend | HTML, CSS, JavaScript |
-| API Calls | AJAX (Fetch API) |
+| API Calls | jQuery AJAX with async/await |
 | External API | RAWG Video Games Database |
 | Hosting | PythonAnywhere |
 
@@ -111,13 +111,14 @@ game_library
 ```
 WSAA-Project/
 ├── app.py                  # Flask app and API routes
-├── dao.py                  # All database operations
+├── GAMEdao.py              # All database operations
 ├── requirements.txt        # Python dependencies
 ├── references.md           # References used for Project
-├── README.md               # This file
+├── config.py               # MySQL credentials & RAWG API key - stored in .gitignore
+├── README.md               
 └── static_pages/
     ├── index.html          # Main web page
-    ├── app.js              # JavaScript and AJAX calls
+    ├── app.js              # JavaScript and jQuery AJAX calls
     └── style.css           # Styling
 ```
 
@@ -174,18 +175,28 @@ CREATE TABLE wishlist (
     date_added  DATETIME,
     FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
 );
+```  
+
+**4. Configure database credentials**
+
+Open `app.py` and update your MySQL connection details:
+```python
+app.config["MYSQL_HOST"]     = "localhost"
+app.config["MYSQL_USER"]     = "root"
+app.config["MYSQL_PASSWORD"] = "your_password"
+app.config["MYSQL_DB"]       = "game_library"
 ```
 
-**4. Add your RAWG API key**
+**5. Add your RAWG API key**
 
 Open `app.py` and replace `YOUR_RAWG_API_KEY` with your actual key.
 
-**5. Run the application**
+**6. Run the application**
 ```bash
 python app.py
 ```
 
-**6. Open your browser**
+**7. Open your browser**
 ```
 http://localhost:5000
 ```

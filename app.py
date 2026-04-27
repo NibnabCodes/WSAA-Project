@@ -1,3 +1,5 @@
+## Author: Niamh Hogan
+
 from flask import Flask, jsonify, request, abort
 import requests 
 import GAMEdao as dao 
@@ -123,6 +125,5 @@ def delete_wishlist(id):
     dao.gameDAO.deleteWishlist(id)
     return jsonify({"message": "Wishlist entry deleted successfully"})
 
-# Run the app
 if __name__ == '__main__':
     app.run(debug=True)

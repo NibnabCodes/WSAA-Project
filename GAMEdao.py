@@ -1,3 +1,5 @@
+## Author: Niamh Hogan
+
 import mysql.connector
 import config as cfg
 
