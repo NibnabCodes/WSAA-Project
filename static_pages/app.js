@@ -1,3 +1,13 @@
+// app.js
+// GameVault frontend JavaScript
+// Handles all jQuery AJAX calls to the Flask REST API
+// Performs CRUD operations for games, reviews and wishlist
+// Includes RAWG API search and dynamic page rendering
+
+// The code in this file was adapted from lab material developed by Andrew Beatty 
+// for the Web Services & Applications module:
+// https://github.com/andrewbeattycourseware/wsaa-courseware/blob/main/code/Topic08-generated-client/staticpages/app.js 
+// Please refer to end of file for further references that were utilized
 // Author: Niamh Hogan
 
 // ---- CONFIG ----
@@ -873,3 +883,34 @@ $(document).ready(function() {
     });
 
 });
+
+// ==========================================================================
+// REFERENCES
+//
+// AJAX & API Handling
+//
+// jQuery AJAX API: https://api.jquery.com/jquery.ajax/
+// JSON stringify: https://www.w3schools.com/js/js_json_stringify.asp
+// RAWG API: https://rawg.io/apidocs
+//
+// jQuery Functions
+//
+// toggleClass(): https://api.jquery.com/toggleClass/
+// addClass(): https://api.jquery.com/addClass/
+// .val(): https://api.jquery.com/val/
+// .empty(): https://api.jquery.com/empty/
+// .append(): https://api.jquery.com/append/
+//
+// JavaScript Core Concepts
+//
+// JavaScript dates & toISOString(): https://www.w3schools.com/js/js_dates.asp
+// encodeURIComponent(): https://www.w3schools.com/jsref/jsref_encodeURIComponent.asp
+// JavaScript errors: https://www.w3schools.com/js/js_errors.asp
+// String .trim(): https://www.w3schools.com/jsref/jsref_trim_string.asp
+//
+// DOM & UI Interaction
+//
+// Show/Hide elements with jQuery: https://www.geeksforgeeks.org/jquery/how-to-show-hide-an-element-using-jquery/
+// HTML data attributes: https://www.w3schools.com/tags/att_data-.asp
+// this vs $(this) in jQuery: https://www.geeksforgeeks.org/jquery/difference-between-this-and-this-in-jquery/
+// ==========================================================================

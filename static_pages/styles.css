@@ -1,5 +1,8 @@
 /* ==========================================================================
-   Source: https://claude.ai/share/625130ae-f3fd-4589-96e9-303725b70a99
+   The CSS styling for the application was fully generated with the assistance of the AI tool Claude.
+   Please refer to the end of the file for the full AI prompt and instructions 
+   that were used to create this stylesheet. 
+   Along with the link to the shareable conversation on the Claude platform. 
    Author: Niamh Hogan
    ========================================================================== */
 
@@ -982,3 +985,47 @@ nav h1 { animation: glitch 6s ease-in-out infinite; }
 
     button { font-size: 0.58rem; padding: 0.4rem 0.7rem; }
 }
+
+/* ==========================================================================
+Reference of all prompts used to build this style.css file, in order of use.
+Reference: https://claude.ai/share/625130ae-f3fd-4589-96e9-303725b70a99  
+
+PROMPTS USED:
+   
+   1. INITIAL REQUEST
+      Please write a complete style.css file for my Flask web 
+      application called GameVault in a Cyberpunk 2077 style.
+      Include toast and loading spinner styles with comments 
+      explaining each section.
+   
+   2. LAYOUT & UI FIXES
+      Fix the following issues:
+      - GAMEVAULT title and subtitle centered in the hero section
+      - Navigation links centered in a row under the hero section
+      - Corner bracket decorations in all four corners of hero
+      - Buttons with different neon colour borders that fill on hover:
+        Edit: yellow #ffe600, Delete: pink #ff2d78, Wishlist: cyan #00f0ff
+      - Glitch layers centered and stacked using position absolute
+        inside a position relative wrapper div
+   
+   3. DESKTOP LAYOUT FIXES
+      The layout looks perfect on mobile but on desktop the section
+      titles, tables and forms are out of alignment. Please fix:
+      - Max-width container (1200px) centered with margin auto
+      - Proper padding and alignment for desktop screens
+      - Media queries for both desktop and mobile
+      - Tables stretch to full width of container
+      - Forms and inputs align properly on larger screens
+   
+   4. BUTTON FIXES & STYLING RULES
+      - Edit, Delete and Reviews buttons were hidden behind 
+        Save to Collection button - ensure all buttons visible
+      - All button text should be white #ffffff
+      - All buttons: transparent background, glowing neon border,
+        white text, border glows brighter on hover, background fills
+        at 20% opacity on hover
+      - Edit: #ffe600, Delete: #ff2d78, Reviews: #00f0ff
+      - Save to Collection: #00ff88, Add to Wishlist: #00f0ff
+      - Submit Review: #ffe600, Save Changes: #ffe600
+      - Cancel: #ff2d78
+   ========================================================================== */

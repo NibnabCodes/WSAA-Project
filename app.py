@@ -1,4 +1,10 @@
-## Author: Niamh Hogan
+# app.py
+# Main Flask application for GameVault
+# Defines all REST API endpoints for games, reviews and wishlist
+# Connects to the RAWG API for game search  
+# See end of file for references utilized
+
+# Author: Niamh Hogan
 
 from flask import Flask, jsonify, request, abort
 import requests 
@@ -127,3 +133,14 @@ def delete_wishlist(id):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+# References: 
+
+# The majority of code within this file was adapted from lab material developed by Andrew Beatty
+# for the Web Services & Applications module:
+# Reference: https://github.com/andrewbeattycourseware/wsaa-courseware/blob/main/code/Topic08-generated-client/rest-server.py
+
+# The following sources were used for the RAWG search endpoint implementation:
+# https://rawg.io/apidocs  
+# https://requests.readthedocs.io/en/latest/  
+# https://flask.palletsprojects.com/en/stable/quickstart/#variable-rules    

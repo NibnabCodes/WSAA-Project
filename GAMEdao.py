@@ -1,4 +1,13 @@
-## Author: Niamh Hogan
+# GAMEdao.py
+# Data Access Object for GameVault
+# Handles all database operations for games, reviews and wishlist
+# Connects to MySQL database using credentials from config.py
+
+# The code within this file was adapted from lab material developed by Andrew Beatty 
+# for the Web Services & Applications module:
+# Reference: https://github.com/andrewbeattycourseware/wsaa-courseware/blob/main/code/Topic08-generated-client/bookDAO.py
+
+# Author: Niamh Hogan
 
 import mysql.connector
 import config as cfg
