@@ -1,20 +1,31 @@
 <div align="center">
 
-# Game Vault 🎮
+# WSAA-Project 🎮
 
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Bitcount+Ink&size=35&duration=2000&pause=2000&color=B842BD&background=FF86E800&width=435&lines=GameVault)](https://git.io/typing-svg)
 
 > A RESTful Flask web application for managing your personal game collection.
 
+</div>
+
 ---
-
-</div> 
-
 
 ## About The Project
 
-This project demonstrates the creation and consumption of a RESTful API built with Python and Flask. It uses the [RAWG Video Games Database API](https://rawg.io/apidocs) as an outside data source, allowing users to search for real games and save them to their personal collection.
+This repository contains my final project completed as part of the 
+assessment requirements for the *Web Services & Applications* module 
+at Atlantic Technological University ~ Galway.
 
-The application performs full **CRUD (Create, Read, Update, Delete)** operations across three related MySQL database tables: games, reviews and wishlist.
+In this project I demonstrate the creation and consumption of a 
+RESTful API built with Python and Flask. I used the 
+[RAWG Video Games Database API](https://rawg.io/apidocs) as an 
+outside data source, allowing me to search for real games and save 
+them to my personal collection.
+
+The application performs full **CRUD (Create, Read, Update, Delete)** 
+operations across three related MySQL database tables: games, reviews 
+and wishlist. 
+
 
 ---
 
@@ -25,7 +36,7 @@ The application performs full **CRUD (Create, Read, Update, Delete)** operations
 - ⭐ Write and manage reviews for saved games
 - 🎯 Maintain a wishlist with priority levels and notes
 - 🔗 Full CRUD operations on all three tables
-- 🎨 Clean responsive UI
+- 🎨 Cyberpunk themed responsive UI
 
 ---
 
@@ -112,26 +123,51 @@ game_library
 WSAA-Project/
 ├── app.py                  # Flask app and API routes
 ├── GAMEdao.py              # All database operations
+├── config_template.py      # Template for config.py setup
 ├── requirements.txt        # Python dependencies
-├── references.md           # References used for Project
-├── config.py               # MySQL credentials & RAWG API key - stored in .gitignore
 ├── README.md               
 └── static_pages/
     ├── index.html          # Main web page
     ├── app.js              # JavaScript and jQuery AJAX calls
-    └── style.css           # Styling
+    └── style.css           # Cyberpunk themed styling
+```
+
+⚠️ `config.py` contains sensitive credentials and is excluded from this repository via `.gitignore`
+
+---
+
+## Dependencies
+
+The following libraries are required to run this project:
+
+- **Python** 3.13.9
+- **Flask** – Web framework for building the REST API
+- **mysql-connector-python** – Connects Python to the MySQL database
+- **requests** – Makes HTTP requests to the RAWG external API
+
+All dependencies are listed in `requirements.txt` and can be installed by running:
+```bash
+pip install -r requirements.txt
 ```
 
 ---
 
+## Environment Setup
+
+- **Git** – Download the latest version of Git at: https://git-scm.com/downloads
+- **GitHub** – Create a free GitHub account at: https://github.com/signup
+- **WAMP** – Download WAMP for local MySQL database at: https://www.wampserver.com
+- **Anaconda** – Recommended as it comes bundled with Python 3.13.9. Install using the following steps:
+  1. Download Anaconda from: https://www.anaconda.com/download
+  2. Open the downloaded file and press next, next
+  3. When the advanced options appear check the following boxes:
+     * Add to PATH environment variable
+     * Make this version your default Python
+- **Visual Studio Code** – Download at: https://code.visualstudio.com/Download
+
+---
+
 ## Getting Started
-
-### Prerequisites
-- Python 3.13.9
-- MySQL / WAMP
-- A free RAWG API key from [rawg.io/apidocs](https://rawg.io/apidocs)
-
-### Installation
 
 **1. Clone the repository**
 ```bash
@@ -175,28 +211,34 @@ CREATE TABLE wishlist (
     date_added  DATETIME,
     FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
 );
-```  
-
-**4. Configure database credentials**
-
-Open `app.py` and update your MySQL connection details:
-```python
-app.config["MYSQL_HOST"]     = "localhost"
-app.config["MYSQL_USER"]     = "root"
-app.config["MYSQL_PASSWORD"] = "your_password"
-app.config["MYSQL_DB"]       = "game_library"
 ```
 
-**5. Add your RAWG API key**
+**4. Set up your config file**
 
-Open `app.py` and replace `YOUR_RAWG_API_KEY` with your actual key.
+- Copy `config_template.py` and rename it to `config.py`
+- Fill in your own MySQL credentials and RAWG API key:
 
-**6. Run the application**
+```python
+mysql = {
+    'host': 'localhost',
+    'user': 'your_mysql_username',
+    'password': 'your_mysql_password',
+    'database': 'game_library'
+}
+
+rawg = {
+    'api_key': 'your_rawg_api_key'
+}
+```
+
+⚠️ Never share or commit your `config.py` file. It is excluded from this repository via `.gitignore`.
+
+**5. Run the application**
 ```bash
 python app.py
 ```
 
-**7. Open your browser**
+**6. Open your browser**
 ```
 http://localhost:5000
 ```
@@ -208,3 +250,16 @@ http://localhost:5000
 The live version of this application is hosted on PythonAnywhere:
 
 🌐 **[https://nibnab.pythonanywhere.com/](https://nibnab.pythonanywhere.com/)**
+
+---
+
+## References
+
+References for each file are documented within that file as comments. Please see below:
+
+- `app.py` 
+- `GAMEdao.py` 
+- `index.html`
+- `app.js`
+- `style.css`
+
